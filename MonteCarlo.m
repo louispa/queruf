@@ -1,9 +1,12 @@
 
 %Sequential Monte Carlo applied on the problem of the project
-function[]=MonteCarlo()
+%based on the received script by the professor Pierre-Antoine Absil
+function[X]=MonteCarlo(a)
 %%
 %our parameters
-
+if nargin<1
+   show=0 
+end
 %the systeme
 %x_(k+1)=F (x_k)+Gamma * v_k
 %z_k = G(x_k)+w_k
@@ -60,6 +63,7 @@ for t=0:t_f-1
     end
     
     z = z_true(:,t+1 +1);
+    %weights
     weights = zeros(1,n);
     for i=1:n
         weights(i) = out_noise_pdf(z-G(Xtilde{i,t+1 +1}));
@@ -71,12 +75,16 @@ for t=0:t_f-1
     
 end
 
-%poids
+
+
+
+if show
+    draft(X,n);
+end
 
 end
 
-%%
-%creer l histogramme et le reste dans une nouvelle fonction
+
 
 %%
 %Function of the systems
@@ -90,4 +98,30 @@ end
 %g(x)
 function[y_out]=G(x_in)
 y_out=atan(x_in(1)/x_in(2));
+end
+
+%%
+%Function to draw the histograms and the plot of the trajectory
+function[]=draft(X,n)
+one=zeros(n,2);
+for i=1:n
+   one(i,:)=[X{i,1}(1) X{i,1}(2)]; 
+end
+fifty=zeros(n,2);
+for i=1:n
+   fifty(i,:)=[X{i,50}(1) X{i,1}(2)]; 
+end
+hundred=zeros(n,2);
+for i=1:n
+   hundred(i,:)=[X{i,100}(1) X{i,1}(2)]; 
+end
+twohundred=zeros(n,2);
+for i=1:n
+   twohundred(i,:)=[X{i,200}(1) X{i,1}(2)]; 
+end
+figure(1)
+hold on;
+subplot(2,2,1)
+histogram(one(:,1));
+
 end
