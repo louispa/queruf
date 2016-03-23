@@ -10,27 +10,27 @@ function[]=MonteCarlo()
 t_f=200;
 d_x=4;
 d_z=1;
-d_v=4;
+d_v=2;
 T=0.5;
 %F is defined in the function below
-Gamma = [T^2/2 * eye(2);T*eye(2)];
+Gamma = [T^2/2 * eye(2);T * eye(2)];
 %G is defined in the function below
 mu_v = 0;
 Sigma_v = sqrt(0.01);%sqrt(variance)
 mu_w= 0;
 Sigma_w = sqrt(0.01); %sqrt(variance)
 
-out_noise_pdf=0; %pour l'isntant n'est-il pas :p
+out_noise_pdf= @(w) 1/sqrt((2*pi)^d_z*abs(det(Sigma_w))) * exp(-.5*(w-mu_w)'*inv(Sigma_w)*(w-mu_w));; %normal sigma theta
 
 x_true = zeros(d_x,t_f +1);
 z_true = zeros(d_z,t_f +1);
 
 x_true(:,0 +1)=ones(4,1);%initialisation
 for t= 0:t_f-1
-   v_true=Gamma*eye(2)*(mu_v+ Sigma_v.*randn(d_v,1));
-   x_true(:,t+1 +1)=F(x_true(:,t +1))+ v_true;
-   w_true=mu_w+ Sigma_w*randn(d_z,1);
-   z_true(:,t +1)=G(x_true(:,t +1))+w_true;
+    v_true=Gamma*eye(2)*(mu_v+ Sigma_v.*randn(d_v,1));
+    x_true(:,t+1 +1)=F(x_true(:,t +1))+ v_true;
+    w_true=mu_w+ Sigma_w*randn(d_z,1);
+    z_true(:,t +1)=G(x_true(:,t +1))+w_true;
 end
 w_true=mu_w+ Sigma_w*randn(d_z,1);
 z_true(:,t_f +1)=G(x_true(:,t_f +1))+w_true;
@@ -40,29 +40,50 @@ z_true(:,t_f +1)=G(x_true(:,t_f +1))+w_true;
 %Start of the algorithm
 
 %ca marche pas pour l'instant ici car on devrait avoir un tableau de
-%5000*200*4 
+%5000*200*4
 n= 5000;
+%je pense qu'on devrait monter à 8 tableaux: 2 par valeur
 X=cell(n,t_f +1); %right X
 Xtilde=cell(n,t_f +1); %predicitons
 t=0;
-X{:,t +1} = ones(4,1);
-
+for i=1:n
+    X{i,t +1} = ones(4,1);
+end
 %Beginning of the loop
 
 for t=0:t_f-1
     %Prediction
-    v=Gamma*eye(2)*(mu_v+ Sigma_v.*randn(d_v,1));
-    Xtilde={i,t+1 +1}=0;
+    
+    for i=1:n
+        epsilon=Gamma*eye(2)*(mu_v+ Sigma_v.*randn(d_v,1)); %epsilon_k
+        Xtilde{i,t+1 +1} = F(X{i,t +1})+ epsilon;
+    end
+    
+    z = z_true(:,t+1 +1);
+    weights = zeros(1,n);
+    for i=1:n
+        weights(i) = out_noise_pdf(z-G(Xtilde{i,t+1 +1}));
+    end
+    ind_sample = randsample(n,n,true,weights);
+    for i=1:n
+        X{i,t+1 +1} = Xtilde{ind_sample(i),t+1 +1};
+    end
+    
 end
 
+%poids
 
 end
+
+%%
+%creer l histogramme et le reste dans une nouvelle fonction
+
 %%
 %Function of the systems
 %f(x)
 function[x_out]=F(x_in)
-%delta T
-f=[eye(2) T*eye(2);zeros(2) eye(2)]; 
+T=0.5;
+f=[eye(2) T*eye(2);zeros(2) eye(2)];
 x_out= f*x_in;
 
 end
