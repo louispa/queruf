@@ -4,7 +4,7 @@ Xm=zeros(5000,200);
 Ym=zeros(5000,200);
 for i=1:5000
   
-    [Zm(i,:),Xm(i,:),Ym(i,:)]=Q2();
+    [Zm(i,:),Xm(i,:),Ym(i,:)]= Q2();
     
 end
 
