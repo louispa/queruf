@@ -19,7 +19,7 @@ Sigma_v = sqrt(0.01);%sqrt(variance)
 mu_w= 0;
 Sigma_w = sqrt(0.01); %sqrt(variance)
 
-out_noise_pdf= @(w) 1/sqrt((2*pi)^d_z*abs(det(Sigma_w))) * exp(-.5*(w-mu_w)'*inv(Sigma_w)*(w-mu_w)); %normal sigma theta
+out_noise_pdf= @(w) 1/sqrt((2*pi)^d_z*abs(det(Sigma_w))) * exp(-.5*(w-mu_w)'*inv(Sigma_w)*(w-mu_w));; %normal sigma theta
 
 x_true = zeros(d_x,t_f +1);
 z_true = zeros(d_z,t_f +1);
@@ -155,6 +155,7 @@ end
 figure(3)
 plot(traj(:,1),traj(:,2));
 title('Trajectory of the target');
+
 
 
 
