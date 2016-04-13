@@ -1,6 +1,7 @@
 
 function[]=draft(obs,real_target,X,Xtilde)
-% %%
+%%
+%At the first iteration
 figure(1)
 subplot(2,1,1)
 hold on;
@@ -26,8 +27,8 @@ for j=1:length(X)
     particules_before(j,:)=(Xtilde{j,1}(:))';
     particules_after(j,:)=(X{j,1}(:))';
 end
-plot(particules_before(:,1),particules_before(:,2),'m*');
-plot(particules_before(:,1),particules_before(:,2),'g.');
+%plot(particules_before(:,1),particules_before(:,2),'m*');
+%plot(particules_before(:,1),particules_before(:,2),'g.');
 hold off;
 
 subplot(2,1,2)

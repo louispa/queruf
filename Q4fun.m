@@ -3,7 +3,7 @@
 %based on the received script by the professor Pierre-Antoine Absil
 function[X_target,Xtilde_target]=Q4fun(observer,target,bearingMeasurements,mu_r,mu_theta,mu_s,mu_c)
 %%
-%the systeme
+%the system
 %x_(k+1)=F (x_k)+Gamma * v_k
 %z_k = G(x_k)+w_k
 t_f=26;
