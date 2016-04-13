@@ -15,7 +15,7 @@ T=1;
 Gamma = [T^2/2 * eye(2);T * eye(2)];
 %G is defined in the function below
 mu_v = 0;
-Sigma_v = sqrt(10^(-6) );%sqrt(variance)
+Sigma_v = sqrt(10^(-6));%sqrt(variance)
 
 Sigma_r = sqrt(0.1); %sqrt(variance) of the relative distance
 

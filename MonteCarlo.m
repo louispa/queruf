@@ -44,6 +44,8 @@ n= 5000;
 %je pense qu'on devrait monter à 8 tableaux: 2 par valeur
 X=cell(n,t_f +1); %right X
 Xtilde=cell(n,t_f +1); %predicitons
+
+%generating initial sample
 t=0;
 for i=1:n
     X{i,t +1} = ones(4,1);
@@ -155,8 +157,5 @@ end
 figure(3)
 plot(traj(:,1),traj(:,2));
 title('Trajectory of the target');
-
-
-
 
 end
