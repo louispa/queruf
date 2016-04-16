@@ -1,0 +1,160 @@
+% Papier A4, taille de police 12pt
+\documentclass[a4paper,12pt]{report}
+
+% Encodage Unicode (caractères spéciaux)
+\usepackage[utf8]{inputenc}
+% Encodage de police
+\usepackage[T1]{fontenc}
+% Support de la typographie française
+\usepackage[english]{babel}
+\usepackage{lmodern}
+
+% Tableaux et listes personnalisées
+\usepackage{tabu,enumerate}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{numprint}
+\usepackage{multicol}
+\usepackage{array} % manipulation de tabeau
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{numprint}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{color}
+
+
+\usepackage{tabularx}
+%\setlength{\tabcolsep}{18pt}
+%\renewcommand{\arraystretch}{1.5}
+
+\pagestyle{fancy}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\renewcommand{\headrulewidth}{0pt}
+\newcommand{\reels}{\mathbb{R}}
+
+\usepackage{geometry}
+\geometry{top=3.2cm, bottom=3.2cm, left=3.2cm , right=3.2cm}
+
+\begin{document}
+\fancyhead[R]{\thepage}
+\fancyhead[L]{2016 - gr34}
+\makeatletter
+\let\@oddfoot\@empty
+\let\@evenfoot\@empty
+\makeatother
+\begin{titlepage}
+\begin{center}
+
+\includegraphics[width=0.25\textwidth]{epl-logo}~\\[0.3cm]
+
+\textsc{\LARGE École Polytechnique de Louvain}\\[0.8cm]
+\textsc{\Large [INMA~1731] Project}\\[0.8cm]
+
+\textsc{\Large Group 34 --- Year 2015-2016}\\[0.5cm]
+
+% Title
+\HRule \\[0.2cm]
+{ \huge \bfseries Project in mathematical engineering\\[0.6cm] }
+\textsc{\LARGE  bearings-only tracking system}\\[0.2cm]
+
+
+\HRule \\[0.5cm]
+
+% Authors, professors, tutor
+{\large
+\begin{tabu} to 0.8\linewidth {Xll}
+    \emph{Autors:}\\
+    \quad Simon \textsc{Boigelot} & 7225\,--\,13\,--\,00\\
+    \quad Pierre-Alexandre \textsc{Louis} & 0000\,--\,13\,--\,00\\
+\end{tabu}
+}
+
+\vfill
+
+% Bottom of the page
+{\large \today}
+
+\end{center}
+\end{titlepage}
+
+
+\setlength{\parskip}{0.35cm}
+
+
+\chapter*{Context}
+
+The bearing only tracking problem consists in finding the position and the velocity of a moving target at any time given the noisy bearing measurements. These measurements are the angle formed by the observer whose velocity can vary and the target who is, during this project, supposed to move at a constant speed.
+
+The Monte-Carlo sequential method, or particle filter, will be used to model the problem and to predict the target's trajectory.   
+
+\chapter*{Question 1}
+
+The target's and observer's positions are respectively denoted by ($x^{t},y^{t}$) and ($x^{o},y^{o}$). Their respective velocities are ($\dot{x}^{t},\dot{y}^{t}$) and ($\dot{x}^{o},\dot{y}^{o}$). At any time k, we can define a state vector:
+$\textbf{x}_{k} = [
+   \begin{array}{cccc}
+      x_{k} & y_{k} & \dot{x}_{k} & \dot{y}_{k}
+   \end{array}
+]^{T}$. A subscript \textit{t} or \textit{o} will be used to denote the target's state vector and the observer's state vector respectively. We can also define the relative state vector defined by $\textbf{x}^{t} - \textbf{x}^{o}$. It's important to keep this definition in mind because we will mostly work with this relative state vector which will be simply denoted by $\textbf{x}_{k}$. $\textbf{x}_{k}$ follows a recursive equation of type:\\
+$$\textbf{x}_{k+1} = \textbf{F}\textbf{x}_{k} - \textbf{U}_{k,k+1} + \textbf{$\epsilon$}_{k}$$ with \textbf{F} $\in$ $\mathbb{R}^{4x4}$, $\textbf{U}_{k,k+1}$ $\in$ $\mathbb{R}^{4x1}$ and $\textbf{$\epsilon$}_{k}$ $\in$ $\mathbb{R}^{4x1}$ a noise. Let's determine these unknown vectors. Therefore, we don't need to take the noise into account since it can be added afterwards to disturb our perfect model. First of all, we will work with the target's state vector $\textbf{x}^{t}_{k}$. The following equations are of application for him since he is supposed to move at a constant velocity.
+\begin{equation*}
+x^{t}_{k+1} = x^{t}_{k} + \dot{x}^{t}_{k} \cdot T 
+\end{equation*}    
+\begin{equation*}
+y^{t}_{k+1} = y^{t}_{k} + \dot{y}^{t}_{k} \cdot T 
+\end{equation*}   
+\begin{equation*}
+\dot{x}^{t}_{k+1} = \dot{x}^{t}_{k} 
+\end{equation*}
+\begin{equation*}
+\dot{y}^{t}_{k+1} = \dot{y}^{t}_{k} 
+\end{equation*}
+with T = $t_{k+1}-t{k}$ the time interval.\\
+The two first equations are two basics physics laws.  
+It follows that \[\textbf{F} = 
+   \left (
+   \begin{array}{cccc}
+      1 & 0 & T & 0 \\
+      0 & 1 & 0 & T \\
+      0 & 0 & 1 & 0 \\
+      0 & 0 & 0 & 1 \\
+   \end{array}
+   \right )
+\]
+Remind that the target moves at a constant velocity and that the $\textbf{U}_{k,k+1}$ matrix is representative of the acceleration of both the target and the observer. As a result, \textbf{U} is only a function of the observer's state vector. Keeping the above expression for \textbf{F}, we can easily find \textbf{U} since:
+\begin{equation*}
+\textbf{U}_{k,k+1} = \textbf{x}_{k+1} - \textbf{F} x_{k}
+\end{equation*}
+Hence, \[\textbf{U}_{k,k+1} = 
+   \left (
+   \begin{array}{c}
+      0 \\
+      0 \\
+      x^{o}_{k+1} - x^{o}_{k} + \dot{x}^{o}_{k} \cdot T \\
+      y^{o}_{k+1} - y^{o}_{k} + \dot{y}^{o}_{k} \cdot T \\
+   \end{array}
+   \right )
+\]
+The observer measure the angle $\theta_{k}$ between him and the target referenced to the y-axis. In fact, he is only able to compute a noisy measurement $z_{k}$ of this angle such that:
+\begin{equation*}
+z_{k} = h(\textbf{x}_{k}) + w_{k}
+\end{equation*}
+$w_{k}$ being a independent zero mean Gaussian noise.
+To find h, we will have to use the definition of $\arctan(x)$. Consequently, it is important to discuss in function of the angle $\theta$ {\color{red} mais on ne connait pas theta normalement !!??}.\\ As a result,
+\begin{equation*}
+      h(\textbf{x}_{k}) =
+     \begin{cases}
+      \arctan(\frac{x_{k}}{y_{k}}) &  \theta \in [0,\frac{\pi}{2}[,\\
+      \pi - \arctan(\frac{x_{k}}{y_{k}}) &   \theta \in ]\frac{\pi}{2},\pi] ,\\
+      \pi + \arctan(\frac{x_{k}}{y_{k}}) &   \theta \in ]\pi,\frac{3 \pi}{2}], \\
+      2\pi - \arctan(\frac{x_{k}}{y_{k}}) & \text{elsewhere}
+     \end{cases}
+\end{equation*}
+
+\end{document}
