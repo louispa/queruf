@@ -15,6 +15,20 @@ d_z=1;
 d_v=2;
 T=1;
 
+% reconstruction du state vector de dim 4 en calculant les vitesses par
+% x(k+1) - x(k). La vitesse au temps t_f est supposee la meme que celle au
+% temps t_f-1
+
+obs = zeros(4,t_f);
+for k = 1:t_f-1
+    obs(1:2,k) = observer(:,k);
+    obs(3:4,k) = (observer(:,k+1) - observer(:,k))/T;
+end
+obs(1:2,t_f) = observer(:,t_f);
+obs(3:4,t_f) = obs(3:4,t_f-1);
+
+    
+
 Gamma = [T^2/2 * eye(2);T * eye(2)];
 mu_v = 0;
 Sigma_v = sqrt(10^(-6));%sqrt(variance)
@@ -50,7 +64,7 @@ x_true(:,1) = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
 for t=0:t_f-1
     epsilon_true = Gamma*(mu_v+Sigma_v.*randn(d_v,1)); %process noise
     x_true(:,t+1 +1)=F(x_true(:,t +1))+ epsilon_true; % soustraire U
-    % x_true(:,t+1 +1)=F(x_true(:,t +1))- U(observer,t +1) + epsilon_true;
+    % x_true(:,t+1 +1)=F(x_true(:,t +1))- U(obs(:,t +1),obs(:,t+1 +1)) + epsilon_true;
 end
 
 %%
@@ -99,7 +113,7 @@ for t=0:t_f-1
     for i=1:n
         epsilon=Gamma*(mu_v+ Sigma_v.*randn(d_v,1)); %epsilon_k
         Xtilde{i,t+1 +1} = F(X{i,t +1})+ epsilon; %add U
-        % Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(observer,t +1) + epsilon;
+        % Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(X{i,t +1},X{i,t+1 +1}) + epsilon;
     end
     
     % CORRECTION
@@ -153,11 +167,12 @@ end
 %u(x)
 % on a besoin de la vitesse de l'obs pour calculer u. Mais on a que sa
 % position... quid?
-function[u_out] = U(observer,k)
+% x1 au temps k et x2 au temps k+1
+function[u_out] = U(x1,x2)
 T = 1;
 u_out = zeros(4,1);
-u_out(1:2,1) = observer(1:2,k+1)-observer(1:2,k)-T*observer(3:4,k);
-u_out(3:4,1) = observer(3:4,k+1)-observer(3:4,k);
+u_out(1:2,1) = x2(1:2)-x1(1:2)-T*x1(3:4);
+u_out(3:4,1) = x2(3:4)-x1(3:4);
 end
 
 %%
