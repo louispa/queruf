@@ -39,12 +39,18 @@ s = mu_s + Sigma_s*randn(1,1);
 c = mu_c+Sigma_c*randn(1,1);
 
 % initialisation of x0 target
-x_true(:,1) = [r*sin(theta); -r*cos(theta); s*cos(c); s*sin(c)];
+% On le considere dans le 1er quadran car theta = 2.0428 avec variance de
+% 0.01
+x_true(:,1) = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
+
 %x_true(:,0 +1)=[mu_c+Sigma_c*randn(2,1);mu_s+Sigma_s*randn(2,1)]-...
 %    [observer(:,1);zeros(2,1)];%initialisation DOIT ETRE MODIFIE
+
+% Comme U intervient, on a une relation implicite pour x_k+1 .. quid?
 for t=0:t_f-1
     epsilon_true = Gamma*(mu_v+Sigma_v.*randn(d_v,1)); %process noise
-    x_true(:,t+1 +1)=F(x_true(:,t +1))+ epsilon_true;
+    x_true(:,t+1 +1)=F(x_true(:,t +1))+ epsilon_true; % soustraire U
+    % x_true(:,t+1 +1)=F(x_true(:,t +1))- U(observer,t +1) + epsilon_true;
 end
 
 %%
@@ -62,21 +68,27 @@ t=0;
 % s = mu_s+Sigma_s*randn(1,1);
 % r = mu_r+Sigma_r*randn(1,1);
 % theta = mu_theta+Sigma_theta*randn(1,1);
-% Afterwards : x0 = [r*sin(theta); -r*cos(theta); s*cos(c); s*sin(c)];
+% Afterwards : x0 = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
+
 % ?? discussion on theta ??
 for i=1:n
-    if (theta >= 0 && theta < pi/2) 
-   % X{i,t +1} =[mu_c+Sigma_c*randn(2,1);mu_s+Sigma_s*randn(2,1)]-...
-        %[(mu_r+Sigma_r*randn(2,1));zeros(2,1)];
-        X{i,t +1} = [r*sin(theta); -r*cos(theta); s*cos(c); s*sin(c)];
-   % X{i,t +1} = [-observer(1,1)+2;-observer(2,1)+0.25;s*cos(c);s*sin(c)];
-    elseif (theta >= pi/2 && theta < pi)
-         X{i,t +1} = [-r*sin(theta); -r*cos(theta); s*cos(c); s*sin(c)];
-    elseif (theta >= pi && theta < 1.5*pi)
-         X{i,t +1} = [r*sin(theta); r*cos(theta); s*cos(c); s*sin(c)];
-    else
-        X{i,t +1} = [r*sin(theta); r*cos(theta); s*cos(c); s*sin(c)];
-    end
+    c = mu_c+Sigma_c*randn(1,1);
+    s = mu_s+Sigma_s*randn(1,1);
+    r = mu_r+Sigma_r*randn(1,1);
+    theta = mu_theta+Sigma_theta(1,1);
+    X{i,t +1} = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
+%     if (theta >= 0 && theta < pi/2) 
+%    % X{i,t +1} =[mu_c+Sigma_c*randn(2,1);mu_s+Sigma_s*randn(2,1)]-...
+%         %[(mu_r+Sigma_r*randn(2,1));zeros(2,1)];
+%         X{i,t +1} = [r*sin(theta); -r*cos(theta); s*cos(c); s*sin(c)];
+%    % X{i,t +1} = [-observer(1,1)+2;-observer(2,1)+0.25;s*cos(c);s*sin(c)];
+%     elseif (theta >= pi/2 && theta < pi)
+%          X{i,t +1} = [-r*sin(theta); -r*cos(theta); s*cos(c); s*sin(c)];
+%     elseif (theta >= pi && theta < 1.5*pi)
+%          X{i,t +1} = [r*sin(theta); r*cos(theta); s*cos(c); s*sin(c)];
+%     else
+%         X{i,t +1} = [r*sin(theta); r*cos(theta); s*cos(c); s*sin(c)];
+%     end
 end
 
 %Beginning of the loop on time
@@ -86,7 +98,8 @@ for t=0:t_f-1
     
     for i=1:n
         epsilon=Gamma*(mu_v+ Sigma_v.*randn(d_v,1)); %epsilon_k
-        Xtilde{i,t+1 +1} = F(X{i,t +1})+ epsilon;
+        Xtilde{i,t+1 +1} = F(X{i,t +1})+ epsilon; %add U
+        % Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(observer,t +1) + epsilon;
     end
     
     % CORRECTION
@@ -103,7 +116,9 @@ for t=0:t_f-1
     
 end
 
-%%Création of the needed vector to plot
+%%
+
+%Creation of the needed vector to plot
 Xtilde_target = cell(n,t_f);%from x^t_1 to x^t_n
 X_target=cell(n,t_f);
 for i=1:n
@@ -133,6 +148,16 @@ end
 %g(x)
 function[y_out]=G(x_in)
 y_out=atan(x_in(1)/x_in(2));
+end
+
+%u(x)
+% on a besoin de la vitesse de l'obs pour calculer u. Mais on a que sa
+% position... quid?
+function[u_out] = U(observer,k)
+T = 1;
+u_out = zeros(4,1);
+u_out(1:2,1) = observer(1:2,k+1)-observer(1:2,k)-T*observer(3:4,k);
+u_out(3:4,1) = observer(3:4,k+1)-observer(3:4,k);
 end
 
 %%
