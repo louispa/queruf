@@ -63,8 +63,12 @@ x_true(:,1) = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
 % Comme U intervient, on a une relation implicite pour x_k+1 .. quid?
 for t=0:t_f-1
     epsilon_true = Gamma*(mu_v+Sigma_v.*randn(d_v,1)); %process noise
-    x_true(:,t+1 +1)=F(x_true(:,t +1))+ epsilon_true; % soustraire U
-    % x_true(:,t+1 +1)=F(x_true(:,t +1))- U(obs(:,t +1),obs(:,t+1 +1)) + epsilon_true;
+    %x_true(:,t+1 +1)=F(x_true(:,t +1))+ epsilon_true; % soustraire U
+    if t == t_f-1
+        x_true(:,t+1 +1)=F(x_true(:,t +1))- U(obs(:,t +1),obs(:,t +1)) + epsilon_true;
+    else
+    x_true(:,t+1 +1)=F(x_true(:,t +1))- U(obs(:,t +1),obs(:,t+1 +1)) + epsilon_true;
+    end
 end
 
 %%
@@ -89,7 +93,7 @@ for i=1:n
     c = mu_c+Sigma_c*randn(1,1);
     s = mu_s+Sigma_s*randn(1,1);
     r = mu_r+Sigma_r*randn(1,1);
-    theta = mu_theta+Sigma_theta(1,1);
+    theta = mu_theta+Sigma_theta*randn(1,1);
     X{i,t +1} = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
 %     if (theta >= 0 && theta < pi/2) 
 %    % X{i,t +1} =[mu_c+Sigma_c*randn(2,1);mu_s+Sigma_s*randn(2,1)]-...
@@ -112,8 +116,12 @@ for t=0:t_f-1
     
     for i=1:n
         epsilon=Gamma*(mu_v+ Sigma_v.*randn(d_v,1)); %epsilon_k
-        Xtilde{i,t+1 +1} = F(X{i,t +1})+ epsilon; %add U
-        % Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(X{i,t +1},X{i,t+1 +1}) + epsilon;
+        %Xtilde{i,t+1 +1} = F(X{i,t +1})+ epsilon; %add U
+        if t == t_f-1
+             Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(X{i,t +1},X{i,t +1}) + epsilon;
+        else    
+        Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(X{i,t +1},X{i,t+1 +1}) + epsilon;
+        end
     end
     
     % CORRECTION
@@ -142,7 +150,7 @@ for i=1:n
    end
 end
 
-%draft(observer,target,X_target,Xtilde_target)
+draft(observer,target,X_target,Xtilde_target)
 
 end
 
