@@ -162,7 +162,7 @@ end
 %Creation of the needed vector to plot
 
 %%Création of the needed vector to plot
-
+>>>>>>> origin/master
 Xtilde_target = cell(n,t_f);%from x^t_1 to x^t_n
 X_target=cell(n,t_f);
 for i=1:n
