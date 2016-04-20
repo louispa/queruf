@@ -1,3 +1,4 @@
+%%
 t=250;
 h=19.6;
 Sr=43;
@@ -6,6 +7,15 @@ qp=30
 Ss30=qp/sqrt(2*g*h)
 G=tf([1],[Sr 2*Ss30*sqrt(g/2/h)]);
 [gy,tg]=step(G,250);
+plot(tg,gy);
+hold on;
+loop=reader('loop_1.txt');
+plot(loop(:,1),loop(:,3)./19.6,'r');
+legend('Résultat théorique','Résultat expérimental','Location','southeast');
+hold off;
+print -djpeg99 10_0.jpeg
+
+%%
 
 H=tf([-sqrt(2*g*h)],[Sr Ss30*sqrt(g/2/h)]);
 [hy,th]=step(G,250);
