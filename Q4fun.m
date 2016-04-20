@@ -48,15 +48,23 @@ z_true = bearingMeasurements; %according to the hypothesis, z is known
 
 % random initial caracteristics of the target
 r = mu_r+Sigma_r*randn(1,1);
-theta = mu_theta+Sigma_theta*randn(1,1);
+theta = mu_theta+Sigma_theta*randn(1,1)
 s = mu_s + Sigma_s*randn(1,1);
 c = mu_c+Sigma_c*randn(1,1);
+<<<<<<< HEAD
+x_true(:,1) = [r*sin(theta)+observer(1,1); r*cos(theta)+observer(2,1); s*cos(c); s*sin(c)];
+=======
 
 % initialisation of x0 target
+<<<<<<< HEAD
 % On le considere dans le 1er quadran car theta = 2.0428 avec variance de
 % 0.01
 x_true(:,1) = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
 
+=======
+x_true(:,1) = [r*sin(theta); -r*cos(theta); s*cos(c); s*sin(c)];
+>>>>>>> origin/master
+>>>>>>> origin/master
 %x_true(:,0 +1)=[mu_c+Sigma_c*randn(2,1);mu_s+Sigma_s*randn(2,1)]-...
 %    [observer(:,1);zeros(2,1)];%initialisation DOIT ETRE MODIFIE
 
@@ -90,6 +98,7 @@ t=0;
 
 % ?? discussion on theta ??
 for i=1:n
+<<<<<<< HEAD
     c = mu_c+Sigma_c*randn(1,1);
     s = mu_s+Sigma_s*randn(1,1);
     r = mu_r+Sigma_r*randn(1,1);
@@ -107,6 +116,22 @@ for i=1:n
 %     else
 %         X{i,t +1} = [r*sin(theta); r*cos(theta); s*cos(c); s*sin(c)];
 %     end
+=======
+    if (theta >= 0 && theta < pi/2)
+        
+   % X{i,t +1} =[mu_c+Sigma_c*randn(2,1);mu_s+Sigma_s*randn(2,1)]-...
+        %[(mu_r+Sigma_r*randn(2,1));zeros(2,1)];
+        X{i,t +1} = [r*sin(theta)+observer(1,1); -r*cos(theta)+observer(2,1); s*cos(c); s*sin(c)];
+   % X{i,t +1} = [-observer(1,1)+2;-observer(2,1)+0.25;s*cos(c);s*sin(c)];
+    elseif (theta >= pi/2 && theta < pi)
+         X{i,t +1} = [r*sin(theta)+observer(1,1);r*cos(theta)+observer(2,1); s*cos(c); s*sin(c)];
+    elseif (theta >= pi && theta < 1.5*pi)
+         X{i,t +1} = [r*sin(theta); r*cos(theta); s*cos(c); s*sin(c)];
+    else
+        X{i,t +1} = [r*sin(theta); r*cos(theta); s*cos(c); s*sin(c)];
+    end
+    
+>>>>>>> origin/master
 end
 
 %Beginning of the loop on time
@@ -137,10 +162,14 @@ for t=0:t_f-1
     end
     
 end
+<<<<<<< HEAD
 
 %%
 
 %Creation of the needed vector to plot
+=======
+%%Création of the needed vector to plot
+>>>>>>> origin/master
 Xtilde_target = cell(n,t_f);%from x^t_1 to x^t_n
 X_target=cell(n,t_f);
 for i=1:n
