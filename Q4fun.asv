@@ -149,16 +149,11 @@ for t=0:t_f-1
     for i=1:n
         weights(i) = out_noise_pdf(z-G(Xtilde{i,t+1 +1}));
     end
-    
-    % normalisation of the weights
-    nbr = sum(weights);
-    weights = weights/nbr;
-    
-    % resampling
     ind_sample = randsample(n,n,true,weights);
     for i=1:n
         X{i,t+1 +1} = Xtilde{ind_sample(i),t+1 +1};
     end
+    
 end
 
 

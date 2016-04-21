@@ -1,7 +1,7 @@
 
 function[]=draft(obs,real_target,X,Xtilde)
 %%
- t_f = 26;
+% t_f = 26;
 % 
 % %At the first iteration
 % % plot the true trajectory of the observer and the target
