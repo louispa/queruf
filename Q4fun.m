@@ -43,38 +43,34 @@ Sigma_c = sqrt(0.1); %sqrt(variance) of the initial course of the target
 out_noise_pdf= @(w) 1/sqrt((2*pi)^d_z*abs(det(Sigma_theta)))...
     * exp(-.5*w'*inv(Sigma_theta)*w); %normal sigma theta
 
-x_true = zeros(d_x,t_f +1);%we will work on that (the relative distance)
+%x_true = zeros(d_x,t_f +1);%we will work on that (the relative distance)
+
+x_true = target-observer;
 z_true = bearingMeasurements; %according to the hypothesis, z is known
 
 % random initial caracteristics of the target
 r = mu_r+Sigma_r*randn(1,1);
-theta = mu_theta+Sigma_theta*randn(1,1)
+theta = mu_theta+Sigma_theta*randn(1,1);
 s = mu_s + Sigma_s*randn(1,1);
 c = mu_c+Sigma_c*randn(1,1);
-
-%x_true(:,1) = [r*sin(theta)+observer(1,1); r*cos(theta)+observer(2,1); s*cos(c); s*sin(c)];
-
 
 % initialisation of x0 target
 
 % On le considere dans le 1er quadran car theta = 2.0428 avec variance de
 % 0.01
-x_true(:,1) = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
 
-
-%x_true(:,0 +1)=[mu_c+Sigma_c*randn(2,1);mu_s+Sigma_s*randn(2,1)]-...
-%    [observer(:,1);zeros(2,1)];%initialisation DOIT ETRE MODIFIE
+%x_true(:,1) = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
 
 % Comme U intervient, on a une relation implicite pour x_k+1 .. quid?
-for t=0:t_f-1
-    epsilon_true = Gamma*(mu_v+Sigma_v.*randn(d_v,1)); %process noise
-    %x_true(:,t+1 +1)=F(x_true(:,t +1))+ epsilon_true; % soustraire U
-    if t == t_f-1
-        x_true(:,t+1 +1)=F(x_true(:,t +1))- U(obs(:,t +1),obs(:,t +1)) + epsilon_true;
-    else
-    x_true(:,t+1 +1)=F(x_true(:,t +1))- U(obs(:,t +1),obs(:,t+1 +1)) + epsilon_true;
-    end
-end
+% for t=0:t_f-1
+%     epsilon_true = Gamma*(mu_v+Sigma_v.*randn(d_v,1)); %process noise
+%     %x_true(:,t+1 +1)=F(x_true(:,t +1))+ epsilon_true; % soustraire U
+%     if t == t_f-1
+%         x_true(:,t+1 +1)=F(x_true(:,t +1))- U(obs(:,t +1),obs(:,t +1)) + epsilon_true;
+%     else
+%     x_true(:,t+1 +1)=F(x_true(:,t +1))- U(obs(:,t +1),obs(:,t+1 +1)) + epsilon_true;
+%     end
+% end
 
 %%
 %Start of the algorithm
