@@ -1,10 +1,10 @@
-
-function[]=draft(obs,real_target,X,Xtilde)
+function[]=draft_bis(obs,real_target,X,Xtilde)
 %%
- t_f = 26;
-% 
-% %At the first iteration
-% % plot the true trajectory of the observer and the target
+
+t_f = 26;
+
+%At the first iteration
+% plot the true trajectory of the observer and the target
 figure(1)
 subplot(2,1,1)
 hold on;
@@ -13,14 +13,14 @@ plot(real_target(1,:),real_target(2,:),'.')% real trajectory of the target
 
 % plot the predicted target's trajectory
 target=zeros(4,t_f);
-for i=1:t_f
+for t=1:t_f
     helper=[0 0 0 0]';
-    for j=1:length(X)
-        helper=helper+X{j,i}; %size(X) = 5000 26
+    for i=1:length(X)
+        helper=helper+X{i,t}; %size(X) = 5000 26
     end
-    target(:,i)=helper/length(X);
+    target(:,t)=helper/length(X);
 end
-pred_traj = zeros(2,26);
+pred_traj = zeros(2,t_f);
 pred_traj(1:2,:) = target(1:2,:) + obs;
 plot(pred_traj(1,:),pred_traj(2,:),'.') % predicted target's trajectory
 
@@ -262,4 +262,4 @@ plot(pred_traj(1,:),pred_traj(2,:),'.') % predicted target's trajectory
 % % % 
 % % % 
 % % % end
-end
+ end

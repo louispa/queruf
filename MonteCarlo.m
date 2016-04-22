@@ -99,7 +99,15 @@ end
 
 %G(x)
 function[y_out]=G(x_in)
-y_out=atan(x_in(1)/x_in(2));
+    if x_in(1)>=0 && x_in(2)>=0
+       y_out = atan(x_in(1)/x_in(2));
+    elseif x_in(1)>0 && x_in(2)<0
+       y_out = pi - atan(x_in(1)/x_in(2));
+    elseif x_in(1)<0 && x_in(2)<0
+       y_out = pi + atan(x_in(1)/x_in(2));
+    else
+       y_out = 2*pi - atan(x_in(1)/x_in(2));
+    end;
 end
 
 %%

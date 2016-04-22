@@ -49,10 +49,11 @@ x_true = target-observer;
 z_true = bearingMeasurements; %according to the hypothesis, z is known
 
 % random initial caracteristics of the target
-r = mu_r+Sigma_r*randn(1,1);
-theta = mu_theta+Sigma_theta*randn(1,1);
-s = mu_s + Sigma_s*randn(1,1);
-c = mu_c+Sigma_c*randn(1,1);
+
+% r = mu_r+Sigma_r*randn(1,1);
+% theta = mu_theta+Sigma_theta*randn(1,1);
+% s = mu_s + Sigma_s*randn(1,1);
+% c = mu_c+Sigma_c*randn(1,1);
 
 % initialisation of x0 target
 
@@ -192,7 +193,15 @@ end
 
 %g(x)
 function[y_out]=G(x_in)
-y_out=atan(x_in(1)/x_in(2));
+    if x_in(1)>=0 && x_in(2)>=0
+       y_out = atan(x_in(1)/x_in(2));
+    elseif x_in(1)>0 && x_in(2)<0
+       y_out = pi - atan(x_in(1)/x_in(2));
+    elseif x_in(1)<0 && x_in(2)<0
+       y_out = pi + atan(x_in(1)/x_in(2));
+    else
+       y_out = 2*pi - atan(x_in(1)/x_in(2));
+    end;
 end
 
 %u(x)
