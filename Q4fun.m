@@ -40,8 +40,9 @@ Sigma_c = sqrt(0.1); %sqrt(variance) of the initial course of the target
 %out_noise_pdf= @(w) 1/sqrt((2*pi)^d_z*abs(det(Sigma_theta)))...
 %    * exp(-.5*(w-mu_theta)'*inv(Sigma_theta)*(w-mu_theta)); %normal sigma theta
 
-out_noise_pdf= @(w) 1/sqrt((2*pi)^d_z*abs(det(Sigma_theta)))...
-    * exp(-.5*w'*inv(Sigma_theta)*w); %normal sigma theta
+out_noise_pdf = @(w) 1/sqrt((2*pi)^d_z*abs(det(Sigma_theta))) * exp(-.5*(w)'*inv(Sigma_theta)*(w));
+%out_noise_pdf= @(w) 1/sqrt((2*pi)^d_z*abs(det(Sigma_theta)))...
+%    * exp(-.5*w'*inv(Sigma_theta)*w); %normal sigma theta
 
 %x_true = zeros(d_x,t_f +1);%we will work on that (the relative distance)
 
@@ -213,6 +214,10 @@ T = 1;
 u_out = zeros(4,1);
 u_out(1:2,1) = x2(1:2)-x1(1:2)-T*x1(3:4);
 u_out(3:4,1) = x2(3:4)-x1(3:4);
+end
+
+function[u_out] = U(x1,x2)
+
 end
 
 %%
