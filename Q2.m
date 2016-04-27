@@ -29,13 +29,13 @@ for k = 1:200
     end
     
     if X(1,k)>=0 && X(2,k)>=0
-        Z(1,k) = atan(X(1,k)/X(2,k))+w(1,k);
+        Z(1,k) = atan(abs(X(1,k)/X(2,k)))+w(1,k);
     elseif X(1,k)>0 && X(2,k)<0
-        Z(1,k) = pi - atan(X(1,k)/X(2,k))+w(1,k);
+        Z(1,k) = pi - atan(abs(X(1,k)/X(2,k)))+w(1,k);
     elseif X(1,k)<0 && X(2,k)<0
-        Z(1,k) = pi + atan(X(1,k)/X(2,k))+w(1,k);
+        Z(1,k) = pi + atan(abs(X(1,k)/X(2,k)))+w(1,k);
     else
-        Z(1,k) = 2*pi - atan(X(1,k)/X(2,k))+w(1,k);
+        Z(1,k) = 2*pi - atan(abs(X(1,k)/X(2,k)))+w(1,k);
     end
 end
 %second part of the algortihm
