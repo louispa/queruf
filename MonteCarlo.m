@@ -23,7 +23,7 @@ Sigma_v = sqrt(0.01);
 mu_w= 0;
 Sigma_w = sqrt(0.01);
 % probability distribution function of noise w (Gaussian)
-out_noise_pdf= @(w) 1/sqrt((2*pi)^d_z*abs(det(Sigma_w))) * exp(-.5*(w-mu_w)'*inv(Sigma_w)*(w-mu_w)); %normal sigma theta
+out_noise_pdf= @(w) 1/sqrt((2*pi)^d_z*abs(det(Sigma_w^2))) * exp(-.5*(w-mu_w)'*inv(Sigma_w^2)*(w-mu_w)); %normal sigma theta
 
 x_true = zeros(d_x,t_f +1);
 z_true = zeros(d_z,t_f +1);
@@ -100,13 +100,13 @@ end
 %G(x)
 function[y_out]=G(x_in)
     if x_in(1)>=0 && x_in(2)>=0
-       y_out = atan(x_in(1)/x_in(2));
+       y_out = atan(abs(x_in(1)/x_in(2)));
     elseif x_in(1)>0 && x_in(2)<0
-       y_out = pi - atan(x_in(1)/x_in(2));
+       y_out = pi - atan(abs(x_in(1)/x_in(2)));
     elseif x_in(1)<0 && x_in(2)<0
-       y_out = pi + atan(x_in(1)/x_in(2));
+       y_out = pi + atan(abs(x_in(1)/x_in(2)));
     else
-       y_out = 2*pi - atan(x_in(1)/x_in(2));
+       y_out = 2*pi - atan(abs(x_in(1)/x_in(2)));
     end;
 end
 

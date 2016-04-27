@@ -48,6 +48,7 @@ z_true = bearingMeasurements; %according to the hypothesis, z is known
 %During the loops we only work on the relative state vector X
 %We create the target state vector X^t afterwards by adding X^0 to X
 n = 5000;
+Nth=n/3;
 X=cell(n,t_f +1); %right relative X postions
 Xtilde=cell(n,t_f +1); %predicitons for relative X positions 
 
@@ -84,10 +85,20 @@ for t=0:t_f-1
        weights(i) = W(z-G(Xtilde{i,t+1 +1}));
     end
     
-    % resampling
-    ind_sample = randsample(n,n,true,weights);
-    for i=1:n
-        X{i,t+1 +1} = Xtilde{ind_sample(i),t+1 +1};
+    sumWeight=sum(weights.*weights);
+    Neff=1/sumWeight;
+    if Neff < Nth
+        % resampling
+        ind_sample = randsample(n,n,true,weights);
+        for i=1:n
+            X{i,t+1 +1} = Xtilde{ind_sample(i),t+1 +1};
+        end
+        A=(2/3)^(1/8);
+        h=A*n^(-1/8);
+        for i=1:n
+           epsilonV=randn(4,1);
+           X{i,t+1 +1}=X{i,t+1 +1} + h*eye(4)*epsilonV;
+        end
     end
 end
 end
