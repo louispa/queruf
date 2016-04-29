@@ -32,7 +32,7 @@ z_true = zeros(d_z,t_f +1);
 x_true(:,0 +1)=ones(4,1);
 
 for t= 0:t_f-1
-    v_true=Gamma*(mu_v+ Sigma_v.*randn(d_v,1));
+    v_true=Gamma*(mu_v+Sigma_v.*randn(d_v,1));
     x_true(:,t+1 +1)=F(x_true(:,t +1))+ v_true;
     w_true=mu_w+ Sigma_w*randn(d_z,1);
     z_true(:,t +1)=G(x_true(:,t +1))+w_true;

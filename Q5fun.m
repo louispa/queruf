@@ -96,8 +96,8 @@ for t=0:t_f-1
         A=(2/3)^(1/8);
         h=A*n^(-1/8);
         for i=1:n
-           epsilonV=randn(4,1);
-           X{i,t+1 +1}=X{i,t+1 +1} + h*eye(4)*epsilonV;
+           epsilonV=randn(2,1);
+           X{i,t+1 +1}=X{i,t+1 +1} + h*Gamma*epsilonV;
         end
     end
 end
