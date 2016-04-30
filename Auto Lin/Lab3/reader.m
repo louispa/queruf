@@ -3,7 +3,7 @@ function [ M ] = reader( f )
 
 %Résultats expérimentaux
 fileid=fopen(f);
-[A]=textscan(fileid,'%f %f %f %f')
+[A]=textscan(fileid,'%f %f %f %f','HeaderLines',1)
 fclose(fileid);
 
 M=[A{1} A{2} A{3} A{4}]
