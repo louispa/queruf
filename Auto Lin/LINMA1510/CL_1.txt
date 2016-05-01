@@ -1,5 +1,5 @@
-t [s] || setpoint speed [rot. s^-1] || setpoint pos [°] || duty cycle [%] || Ang Speed [rot. s^-1] ||
-Ang Pos [°]
+t [s] || setpoint speed [rot. s^-1] || setpoint pos [°] || duty cycle [%] || 
+Ang Speed [rot. s^-1] || Ang Pos [°]
 0.000000E+0	5.000000E+0	0.000000E+0	100.000000E-3	-12.176917E-3	17.034595E+3
 100.000000E-3	5.000000E+0	0.000000E+0	100.000000E-3	-38.789552E-3	17.034595E+3
 200.000000E-3	5.000000E+0	0.000000E+0	100.000000E-3	-23.582332E-3	17.034595E+3

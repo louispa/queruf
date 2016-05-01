@@ -1,5 +1,5 @@
-function [ M ] = reader( f )
-%Imprime les résultats du labo 1 et les compare aux modèles théoriques
+function [ M ] = reader3( f )
+%Imprime les résultats du labo 3 et les compare aux modèles théoriques
 
 %Résultats expérimentaux
 fileid=fopen(f);
