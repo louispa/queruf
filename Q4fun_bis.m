@@ -115,9 +115,9 @@ function[y_out] = G(x_in)
     end;
 end
 
-% function[y_out]=G(x_in)
-%     y_out = atan(abs(x_in(1)/x_in(2)));
-% end
+ %function[y_out]=G(x_in)
+ %    y_out = atan(x_in(1)/x_in(2));
+ %end
 
 % function[y_out]=G(x_in)
 %     if x_in(1)>=0 && x_in(2)>=0
@@ -139,7 +139,7 @@ function[u_out] = U(x1,x2)
 T = 1;
 u_out = zeros(4,1);
 u_out(1:2,1) = -x2(1:2)+x1(1:2)+T*x1(3:4);
-u_out(3:4,1) = x2(3:4)-x1(3:4);
+u_out(3:4,1) = -x2(3:4)+x1(3:4);
 end
 
 function[w_out] = W(w)

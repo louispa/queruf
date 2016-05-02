@@ -129,15 +129,15 @@ It follows that \[\textbf{F} =
 \]
 Remind that the target moves at a constant velocity and that the $\textbf{U}_{k,k+1}$ matrix is representative of the acceleration of both the target and the observer. As a result, \textbf{U} is only a function of the observer's state vector. Keeping the above expression for \textbf{F}, we can easily find \textbf{U} since:
 \begin{equation*}
-\textbf{U}_{k,k+1} = \textbf{x}_{k+1} - \textbf{F} x_{k}
+\textbf{U}_{k,k+1} = \textbf{F} x_{k} - \textbf{x}_{k+1}
 \end{equation*}
 Hence, \[\textbf{U}_{k,k+1} = 
    \left (
    \begin{array}{c}
-   	  x^{o}_{k+1} - x^{o}_{k} - \dot{x}^{o}_{k} \cdot T \\
-      y^{o}_{k+1} - y^{o}_{k} - \dot{y}^{o}_{k} \cdot T \\
-      \dot{x}^{0}_{k+1} - \dot{x}^{0}_{k} \\
-      \dot{y}^{0}_{k+1} - \dot{y}^{0}_{k}\\
+   	  x^{o}_{k} + \dot{x}^{o}_{k} \cdot T - x^{o}_{k+1} \\
+      y^{o}_{k} + \dot{y}^{o}_{k} \cdot T -  y^{o}_{k+1} \\
+      \dot{x}^{0}_{k} - \dot{x}^{0}_{k+1} \\
+      \dot{y}^{0}_{k} - \dot{y}^{0}_{k+1}\\
    \end{array}
    \right )
 \]

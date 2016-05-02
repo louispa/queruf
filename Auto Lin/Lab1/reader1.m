@@ -3,10 +3,10 @@ function [ M ] = reader1( f )
 
 %Résultats expérimentaux
 fileid=fopen(f);
-[A]=textscan(fileid,'%f %f %f %f %f %f','HeaderLines',1);
+[A]=textscan(fileid,'%f %f %f %f %f','HeaderLines',1);
 fclose(fileid);
 
-M=[A{1} A{2} A{3} A{4} A{5} A{6}];
+M=[A{1} A{2} A{3} A{4} A{5}];
 
 end
 
