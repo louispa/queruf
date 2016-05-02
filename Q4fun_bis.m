@@ -73,7 +73,7 @@ for t=0:t_f-1
     
     for i=1:n
         epsilon = Gamma*(mu_v + Sigma_v.*randn(d_v,1)); %epsilon_k
-        Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(obs(:,t +1),obs(:,t+1 +1)) + epsilon;
+        Xtilde{i,t+1 +1} = F(X{i,t +1}) - U2(obs(:,t +1),obs(:,t+1 +1)) + epsilon;
         %Xtilde{i,t+1 +1} = F(X{i,t +1}) + epsilon;
     end    
     % CORRECTION
@@ -141,6 +141,14 @@ u_out = zeros(4,1);
 u_out(1:2,1) = -x2(1:2)+x1(1:2)+T*x1(3:4);
 u_out(3:4,1) = -x2(3:4)+x1(3:4);
 end
+
+function[u_out]=U2(x1,x2)%version de l'autre
+T=1;
+u_out=zeros(4,1);
+u_out(1:2)=T/2*(x2(3:4)-x1(3:4));
+u_out(3:4,1) = x2(3:4)-x1(3:4);
+end
+
 
 function[w_out] = W(w)
 Sigma_w = 10^(-2);
