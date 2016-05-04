@@ -115,9 +115,9 @@ function[y_out] = G(x_in)
     end;
 end
 
- %function[y_out]=G(x_in)
- %    y_out = atan(x_in(1)/x_in(2));
- %end
+%  function[y_out]=G(x_in)
+%     y_out = atan(x_in(1)/x_in(2));
+%  end
 
 % function[y_out]=G(x_in)
 %     if x_in(1)>=0 && x_in(2)>=0
