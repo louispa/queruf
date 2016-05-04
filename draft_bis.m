@@ -6,9 +6,7 @@ t_f = 26;
 %At the first iteration
 % plot the true trajectory of the observer and the target
 figure(1)
-subplot(2,1,1)
-hold on;
-plot(obs(1,:),obs(2,:),'.') % real trajectory of the observer
+plot(obs(1,:),obs(2,:),'.'); hold on; % real trajectory of the observer
 plot(real_target(1,:),real_target(2,:),'.')% real trajectory of the target
 
 % plot the predicted target's trajectory
@@ -22,7 +20,7 @@ for t=1:t_f
 end
 pred_traj = zeros(2,t_f);
 pred_traj(1:2,:) = target(1:2,:) + obs;
-plot(pred_traj(1,:),pred_traj(2,:),'.') % predicted target's trajectory
+plot(pred_traj(1,:),pred_traj(2,:),'.'); hold off % predicted target's trajectory
 
 
 % particules_before=zeros(5000,4);

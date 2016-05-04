@@ -36,7 +36,8 @@ sqrt_Sigma_x = sqrt(Sigma_x);
 sqrt_Sigma_u = sqrt(Sigma_u);
 sqrt_Sigma_w = sqrt(Sigma_w);
 
-out_noise_pdf = @(w) 1/sqrt((2*pi)^d_y*abs(det(Sigma_w))) * exp(-.5*(w-mu_w)'*inv(Sigma_w)*(w-mu_w));  % pdf of the output noise w_t
+out_noise_pdf = @(w) 1/sqrt((2*pi)^d_y*abs(det(Sigma_w))) * exp(-.5*(w-mu_w)'*inv(Sigma_w)*(w-mu_w));
+% pdf of the output noise w_t
 
 % ** Simulation: Generate y_t, t=0,..,t_f, that will be used as the
 % observations in the SMC algorithm.
@@ -78,6 +79,7 @@ for t = 0:t_f-1
     u = mu_u + sqrt_Sigma_u * randn(d_u,1);  % HIDDEN
     Xtilde{i,t+1 +1} = F(X{i,t +1}) + Gamma * u;  % HIDDEN
   end
+  
   
   
   % ** Correction

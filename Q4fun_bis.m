@@ -75,7 +75,8 @@ for t=0:t_f-1
         epsilon = Gamma*(mu_v + Sigma_v.*randn(d_v,1)); %epsilon_k
         Xtilde{i,t+1 +1} = F(X{i,t +1}) - U2(obs(:,t +1),obs(:,t+1 +1)) + epsilon;
         %Xtilde{i,t+1 +1} = F(X{i,t +1}) + epsilon;
-    end    
+    end
+    Xtilde{1,2}
     % CORRECTION
     z = z_true(:,t+1 +1);
     %weights
@@ -103,19 +104,33 @@ x_out = f*x_in;
 end
 
 %g(x)
+
+% g de Quentin
 function[y_out] = G(x_in)
-    if x_in(1)>=0 && x_in(2)>=0
-       y_out = atan(abs(x_in(1)/x_in(2)));
-    elseif x_in(1)>0 && x_in(2)<0
-       y_out = pi - atan(abs(x_in(1)/x_in(2)));
+    if x_in(1)>0 && x_in(2)>0
+       y_out = atan(x_in(1)/x_in(2));
+    elseif x_in(1)<0 && x_in(2)>0
+       y_out = atan(x_in(2)/x_in(1))+3*pi/2;
     elseif x_in(1)<0 && x_in(2)<0
-       y_out = pi + atan(abs(x_in(1)/x_in(2)));
+       y_out = pi + atan(x_in(1)/x_in(2));
     else
-       y_out = 2*pi - atan(abs(x_in(1)/x_in(2)));
+       y_out = atan(x_in(2)/x_in(1))+pi/2;
     end;
 end
 
-%  function[y_out]=G(x_in)
+% function[y_out] = G(x_in)
+%     if x_in(1)>=0 && x_in(2)>=0
+%        y_out = atan(abs(x_in(1)/x_in(2)));
+%     elseif x_in(1)>0 && x_in(2)<0
+%        y_out = pi - atan(abs(x_in(1)/x_in(2)));
+%     elseif x_in(1)<0 && x_in(2)<0
+%        y_out = pi + atan(abs(x_in(1)/x_in(2)));
+%     else
+%        y_out = 2*pi - atan(abs(x_in(1)/x_in(2)));
+%     end;
+% end
+
+%  function[y_out]= G(x_in)
 %     y_out = atan(x_in(1)/x_in(2));
 %  end
 
@@ -138,7 +153,7 @@ end
 function[u_out] = U(x1,x2)
 T = 1;
 u_out = zeros(4,1);
-u_out(1:2,1) = -x2(1:2)+x1(1:2)+T*x1(3:4);
+u_out(1:2,1) = -x2(1:2)+x1(1:2);%+T*x1(3:4);
 u_out(3:4,1) = -x2(3:4)+x1(3:4);
 end
 
@@ -152,8 +167,10 @@ end
 
 function[w_out] = W(w)
 Sigma_w = 10^(-2);
-mu_w = 0;
-w_out = 1/sqrt((2*pi*Sigma_w)) * exp((-0.5/Sigma_w)*(w-mu_w)^2); %normal sigma theta
+d_y = 1;
+mu_w = 2.0428;
+w_out = 1/(sqrt(2*pi)*Sigma_w) * exp(-0.5*((w-mu_w)/Sigma_w)^2); %normal sigma theta
+%w_out = 1/sqrt((2*pi)^d_y*abs(det(Sigma_w))) * exp(-.5*(w-mu_w)'*inv(Sigma_w)*(w-mu_w)); 
 end
 
 %%
