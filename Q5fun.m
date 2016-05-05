@@ -67,39 +67,80 @@ for i=1:n
     X{i,t +1} = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
 end
 
+%First time for prediction
+for i=1:n
+    %epsilon = Gamma*(mu_v + Sigma_v.*randn(d_v,1)); %epsilon_k
+    epsilon = Gamma*normrnd(mu_v,Sigma_v,d_v,1);
+    Xtilde{i,t+1 +1} = F(X{i,t +1}) - U2(obs(:,t +1),obs(:,t+1 +1)) + epsilon;
+    %Xtilde{i,t+1 +1} = F(X{i,t +1}) + epsilon;
+end
+% CORRECTION
+z = z_true(:,t+1 +1);
+%weights
+weights = zeros(1,n);
+for i=1:n
+    weights(i) = W(z-G(Xtilde{i,t+1 +1}));
+end
+
+% resampling
+ind_sample = randsample(n,n,true,weights);
+for i=1:n
+    X{i,t+1 +1} = Xtilde{ind_sample(i),t+1 +1};
+end
+weights=weights/sum(weights);
+A=(2/3)^(1/8);
+h=A*n^(-1/8);
 %Beginning of the loop on time
-for t=0:t_f-1
-    
+for t=1:t_f-1
+    ind_sample = randsample(n,n,true,weights);
+    %SAMPLING
+    for j=1:n 
+       epsilonV=randn(2,1);
+       Xtilde{j,t+1}=X{ind_sample,t+1}+h*Gamma*epsilonV; 
+    end
     %PREDICTION
     
     for i=1:n
         epsilon = Gamma*(mu_v + Sigma_v.*randn(d_v,1)); %epsilon_k
-        Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(obs(:,t +1),obs(:,t+1 +1)) + epsilon;
+        Xtilde{i,t+1 +1} = F(X{i,t +1}) - U2(obs(:,t +1),obs(:,t+1 +1)) + epsilon;
         %Xtilde{i,t+1 +1} = F(X{i,t +1}) + epsilon;
     end    
+    
     % CORRECTION
     z = z_true(:,t+1 +1);
     %weights
     weights = zeros(1,n);
     for i=1:n
-       weights(i) = W(z-G(Xtilde{i,t+1 +1}));
+       weights(i) = W(z-Gabs(Xtilde{i,t+1 +1}));
     end
     
     sumWeight=sum(weights.*weights);
     Neff=1/sumWeight;
-    if Neff < Nth
-        % resampling
+    
+    if Neff <Nth
+        for i=1:n
+            K=Kh(X); 
+        end
+    else
         ind_sample = randsample(n,n,true,weights);
         for i=1:n
             X{i,t+1 +1} = Xtilde{ind_sample(i),t+1 +1};
         end
-        A=(2/3)^(1/8);
-        h=A*n^(-1/8);
-        for i=1:n
-           epsilonV=randn(2,1);
-           X{i,t+1 +1}=X{i,t+1 +1} + h*Gamma*epsilonV;
-        end
     end
+        % resampling
+        %ind_sample = randsample(n,n,true,weights);
+%         for i=1:n
+%             X{i,t+1 +1} = Xtilde{ind_sample(i),t+1 +1};
+%         end
+     if Neff < Nth   
+%         A=(2/3)^(1/8);
+%         h=A*n^(-1/8);
+%         for i=1:n
+%            epsilonV=randn(2,1);
+%            X{i,t+1 +1}=X{i,t+1 +1} + h*Gamma*epsilonV;
+%            end
+        K=Kh(1,h);
+     end
 end
 end
 %%
@@ -116,35 +157,35 @@ end
 %g(x)
 
 % g de Quentin
-function[y_out] = G(x_in)
-    if x_in(1)>0 && x_in(2)>0
-       y_out = atan(x_in(1)/x_in(2));
-    elseif x_in(1)<0 && x_in(2)>0
-       y_out = atan(x_in(1)/x_in(2))+3*pi/2;
-    elseif x_in(1)<0 && x_in(2)<0
-       y_out = pi + atan(x_in(1)/x_in(2));
-    else
-       y_out = atan(x_in(1)/x_in(2))+pi/2;
-    end;
-end
-
 % function[y_out] = G(x_in)
-%     if x_in(1)>=0 && x_in(2)>=0
-%        y_out = atan(abs(x_in(1)/x_in(2)));
-%     elseif x_in(1)>0 && x_in(2)<0
-%        y_out = pi - atan(abs(x_in(1)/x_in(2)));
+%     if x_in(1)>0 && x_in(2)>0
+%        y_out = atan(x_in(1)/x_in(2));
+%     elseif x_in(1)<0 && x_in(2)>0
+%        y_out = atan(x_in(1)/x_in(2))+3*pi/2;
 %     elseif x_in(1)<0 && x_in(2)<0
-%        y_out = pi + atan(abs(x_in(1)/x_in(2)));
+%        y_out = pi + atan(x_in(1)/x_in(2));
 %     else
-%        y_out = 2*pi - atan(abs(x_in(1)/x_in(2)));
+%        y_out = atan(x_in(1)/x_in(2))+pi/2;
 %     end;
 % end
+
+function[y_out] = Gabs(x_in)
+    if x_in(1)>=0 && x_in(2)>=0
+       y_out = atan(abs(x_in(1)/x_in(2)));
+    elseif x_in(1)>0 && x_in(2)<0
+       y_out = pi - atan(abs(x_in(1)/x_in(2)));
+    elseif x_in(1)<0 && x_in(2)<0
+       y_out = pi + atan(abs(x_in(1)/x_in(2)));
+    else
+       y_out = 2*pi - atan(abs(x_in(1)/x_in(2)));
+    end;
+end
 
 % function[y_out]=G(x_in)
 %     y_out = atan(abs(x_in(1)/x_in(2)));
 % end
 
-% function[y_out]=G(x_in)
+% function[y_out]=Gnonabs(x_in)
 %     if x_in(1)>=0 && x_in(2)>=0
 %        y_out = atan((x_in(1)/x_in(2)));
 %     elseif x_in(1)>0 && x_in(2)<0
@@ -167,10 +208,22 @@ u_out(1:2,1) = -x2(1:2)+x1(1:2);%+T*x1(3:4);
 u_out(3:4,1) = x2(3:4)-x1(3:4);
 end
 
+function[u_out]=U2(x1,x2)%version de l'autre
+T=1;
+u_out=zeros(4,1);
+u_out(1:2)=T/2*(x2(3:4)-x1(3:4));
+u_out(3:4,1) = x2(3:4)-x1(3:4);
+end
+
 function[w_out] = W(w)
-Sigma_w = 10^(-2);
+Sigma_w = 10^(-4);
 mu_w = 0;
 w_out = 1/sqrt((2*pi*Sigma_w)) * exp((-0.5/Sigma_w)*(w-mu_w)^2); %normal sigma theta
+end
+
+function[x_out] = Kh(x_in,h)
+K=sqrt(2*pi)^-1*exp(x_in/h);
+x_out=K/h^4;
 end
 
 %%
