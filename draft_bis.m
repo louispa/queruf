@@ -20,7 +20,7 @@ for t=1:t_f
 end
 pred_traj = zeros(2,t_f);
 pred_traj(1:2,:) = target(1:2,:) + obs;
-plot(pred_traj(1,:),pred_traj(2,:),'.'); hold off % predicted target's trajectory
+plot(pred_traj(1,:),pred_traj(2,:),'g.'); hold off % predicted target's trajectory
 
 
 % particules_before=zeros(5000,4);

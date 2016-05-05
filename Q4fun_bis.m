@@ -59,17 +59,17 @@ Xtilde=cell(n,t_f +1); %predicitons for relative X positions
 % Afterwards : x0 = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
 t=0;
 for i=1:n
-    %c = mu_c+Sigma_c*randn(1,1);
-    %s = mu_s+Sigma_s*randn(1,1);
-    %r = mu_r+Sigma_r*randn(1,1);
-    %theta = mu_theta+Sigma_theta*randn(1,1);
+    c = mu_c+Sigma_c*randn(1,1);
+    s = mu_s+Sigma_s*randn(1,1);
+    r = mu_r+Sigma_r*randn(1,1);
+    theta = mu_theta+Sigma_theta*randn(1,1);
     
-    c = normrnd(mu_c,Sigma_c);
-    s = normrnd(mu_s,Sigma_s);
-    r = normrnd(mu_r,Sigma_r);
-    theta = normrnd(mu_theta,Sigma_theta);
+%     c = normrnd(mu_c,Sigma_c);
+%     s = normrnd(mu_s,Sigma_s);
+%     r = normrnd(mu_r,Sigma_r);
+%     theta = normrnd(mu_theta,Sigma_theta);
     
-    X{i,t +1} = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
+    X{i,t +1} = [r*sin(theta); r*cos(theta);s*sin(c) - obs(3,1); s*cos(c) - obs(4,1)];
 end
 
 %Beginning of the loop on time
@@ -78,8 +78,8 @@ for t=0:t_f-1
     %PREDICTION
     
     for i=1:n
-        %epsilon = Gamma*(mu_v + Sigma_v.*randn(d_v,1)); %epsilon_k
-        epsilon = Gamma*normrnd(mu_v,Sigma_v,d_v,1);
+        epsilon = Gamma*(mu_v + Sigma_v.*randn(d_v,1)); %epsilon_k
+        %epsilon = Gamma*normrnd(mu_v,Sigma_v,d_v,1);
         Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(obs(:,t +1),obs(:,t+1 +1)) + epsilon;
         %Xtilde{i,t+1 +1} = F(X{i,t +1}) + epsilon;
     end
@@ -112,29 +112,29 @@ end
 %g(x)
 
 % g de Quentin
-function[y_out] = G(x_in)
-    if x_in(1)>0 && x_in(2)>0
-       y_out = atan(x_in(1)/x_in(2));
-    elseif x_in(1)<0 && x_in(2)>0
-       y_out = atan(x_in(2)/x_in(1))+3*pi/2;
-    elseif x_in(1)<0 && x_in(2)<0
-       y_out = pi + atan(x_in(1)/x_in(2));
-    else
-       y_out = atan(x_in(2)/x_in(1))+pi/2;
-    end;
-end
-
 % function[y_out] = G(x_in)
-%     if x_in(1)>=0 && x_in(2)>=0
-%        y_out = atan(abs(x_in(1)/x_in(2)));
-%     elseif x_in(1)>0 && x_in(2)<0
-%        y_out = pi - atan(abs(x_in(1)/x_in(2)));
+%     if x_in(1)>0 && x_in(2)>0
+%        y_out = atan(x_in(1)/x_in(2));
+%     elseif x_in(1)<0 && x_in(2)>0
+%        y_out = atan(x_in(2)/x_in(1))+3*pi/2;
 %     elseif x_in(1)<0 && x_in(2)<0
-%        y_out = pi + atan(abs(x_in(1)/x_in(2)));
+%        y_out = pi + atan(x_in(1)/x_in(2));
 %     else
-%        y_out = 2*pi - atan(abs(x_in(1)/x_in(2)));
+%        y_out = atan(x_in(2)/x_in(1))+pi/2;
 %     end;
 % end
+
+function[y_out] = G(x_in)
+    if x_in(1)>=0 && x_in(2)>=0
+       y_out = atan(abs(x_in(1)/x_in(2)));
+    elseif x_in(1)>0 && x_in(2)<0
+       y_out = pi - atan(abs(x_in(1)/x_in(2)));
+    elseif x_in(1)<0 && x_in(2)<0
+       y_out = pi + atan(abs(x_in(1)/x_in(2)));
+    else
+       y_out = 2*pi - atan(abs(x_in(1)/x_in(2)));
+    end;
+end
 
 %  function[y_out]= G(x_in)
 %     y_out = atan(x_in(1)/x_in(2));
@@ -159,20 +159,20 @@ end
 function[u_out] = U(x1,x2)
 T = 1;
 u_out = zeros(4,1);
-u_out(1:2,1) = -x2(1:2)+x1(1:2)+T*x1(3:4);
-u_out(3:4,1) = -x2(3:4)+x1(3:4);
+u_out(1:2,1) = x2(1:2)-x1(1:2)-T*x1(3:4);
+u_out(3:4,1) = x2(3:4)-x1(3:4);
 end
 
 function[u_out]=U2(x1,x2)%version de l'autre
 T=1;
 u_out=zeros(4,1);
 u_out(1:2)=T/2*(x2(3:4)-x1(3:4));
-u_out(3:4,1) = x2(3:4)-x1(3:4);
+u_out(3:4) = x2(3:4)-x1(3:4);
 end
 
 
 function[w_out] = W(w)
-Sigma_w = 0.1;
+Sigma_w = 0.01;
 mu_w = 0;
 w_out = 1/(sqrt(2*pi)*Sigma_w) * exp(-0.5*((w-mu_w)/Sigma_w)^2); %normal sigma theta
 %w_out = 1/sqrt((2*pi)^d_y*abs(det(Sigma_w))) * exp(-.5*(w-mu_w)'*inv(Sigma_w)*(w-mu_w)); 
