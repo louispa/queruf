@@ -20,8 +20,20 @@ for t=1:t_f
 end
 pred_traj = zeros(2,t_f);
 pred_traj(1:2,:) = target(1:2,:) + obs;
-plot(pred_traj(1,:),pred_traj(2,:),'.'); hold off % predicted target's trajectory
+plot(pred_traj(1,:),pred_traj(2,:),'m*');% predicted target's trajectory
 
+targeti=zeros(4,t_f);
+targeti(1,:)=pred_traj(1,:);
+for t=2:t_f
+    helper=[0 0 0 0]';
+    for i=2:length(X)
+        helper=helper+Xtilde{i,t}; %size(X) = 5000 26
+    end
+    targeti(:,t)=helper/length(X);
+end
+pred_traji = zeros(2,t_f);
+pred_traji(1:2,:) = targeti(1:2,:) + obs;
+plot(pred_traji(1,:),pred_traji(2,:),'g*')
 
 % particules_before=zeros(5000,4);
 % particules_after=zeros(5000,4);
