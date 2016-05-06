@@ -116,29 +116,29 @@ end
 %g(x)
 
 % g de Quentin
-function[y_out] = G(x_in)
-    if x_in(1)>0 && x_in(2)>0
-       y_out = atan(x_in(1)/x_in(2));
-    elseif x_in(1)<0 && x_in(2)>0
-       y_out = atan(x_in(1)/x_in(2))+3*pi/2;
-    elseif x_in(1)<0 && x_in(2)<0
-       y_out = pi + atan(x_in(1)/x_in(2));
-    else
-       y_out = atan(x_in(1)/x_in(2))+pi/2;
-    end;
-end
-
 % function[y_out] = G(x_in)
-%     if x_in(1)>=0 && x_in(2)>=0
-%        y_out = atan(abs(x_in(1)/x_in(2)));
-%     elseif x_in(1)>0 && x_in(2)<0
-%        y_out = pi - atan(abs(x_in(1)/x_in(2)));
+%     if x_in(1)>0 && x_in(2)>0
+%        y_out = atan(x_in(1)/x_in(2));
+%     elseif x_in(1)<0 && x_in(2)>0
+%        y_out = atan(x_in(1)/x_in(2))+3*pi/2;
 %     elseif x_in(1)<0 && x_in(2)<0
-%        y_out = pi + atan(abs(x_in(1)/x_in(2)));
+%        y_out = pi + atan(x_in(1)/x_in(2));
 %     else
-%        y_out = 2*pi - atan(abs(x_in(1)/x_in(2)));
+%        y_out = atan(x_in(1)/x_in(2))+pi/2;
 %     end;
 % end
+
+function[y_out] = G(x_in)
+    if x_in(1)>=0 && x_in(2)>=0
+       y_out = atan(abs(x_in(1)/x_in(2)));
+    elseif x_in(1)>0 && x_in(2)<0
+       y_out = pi - atan(abs(x_in(1)/x_in(2)));
+    elseif x_in(1)<0 && x_in(2)<0
+       y_out = pi + atan(abs(x_in(1)/x_in(2)));
+    else
+       y_out = 2*pi - atan(abs(x_in(1)/x_in(2)));
+    end;
+end
 
 % function[y_out]=G(x_in)
 %     y_out = atan(abs(x_in(1)/x_in(2)));
