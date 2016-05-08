@@ -15,10 +15,10 @@ t_f = 25;
 d_z=1;
 d_v=2;
 T=1;
-
 % reconstruction du state vector de dim 4 en calculant les vitesses par
 % x(k+1) - x(k). La vitesse au temps t_f est supposee la meme que celle au
 % temps t_f-1
+
 
 obs = zeros(4,t_f+1);
 for k = 1:t_f
@@ -35,6 +35,12 @@ Sigma_r = sqrt(0.1); %sqrt(variance) of the relative distance
 Sigma_theta = sqrt(10^(-4)); %sqrt(variance) of the initial bearing
 Sigma_s = sqrt(0.1); %sqrt(variance) of the initial speed of the target
 Sigma_c = sqrt(0.1); %sqrt(variance) of the initial course of the target
+
+%  Sigma_v = 0;%sqrt(variance)
+%  Sigma_r = 0; %sqrt(variance) of the relative distance
+%  Sigma_theta = 0; %sqrt(variance) of the initial bearing
+%  Sigma_s = 0; %sqrt(variance) of the initial speed of the target
+%  Sigma_c = 0; %sqrt(variance) of the initial course of the target
 
 %out_noise_pdf= @(w) 1/sqrt((2*pi)^d_z*abs(det(Sigma_theta)))...
 %    * exp(-.5*w'*inv(Sigma_theta)*w); %normal sigma theta
@@ -59,17 +65,11 @@ Xtilde=cell(n,t_f +1); %predicitons for relative X positions
 % Afterwards : x0 = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
 t=0;
 for i=1:n
-    %c = mu_c+Sigma_c*randn(1,1);
-    %s = mu_s+Sigma_s*randn(1,1);
-    %r = mu_r+Sigma_r*randn(1,1);
-    %theta = mu_theta+Sigma_theta*randn(1,1);
-    
-    c = normrnd(mu_c,Sigma_c);
-    s = normrnd(mu_s,Sigma_s);
-    r = normrnd(mu_r,Sigma_r);
-    theta = normrnd(mu_theta,Sigma_theta);
-    
-    X{i,t +1} = [r*sin(theta); r*cos(theta); s*sin(c); s*cos(c)];
+    c = mu_c+Sigma_c*randn(1,1);
+    s = mu_s+Sigma_s*randn(1,1);
+    r = mu_r+Sigma_r*randn(1,1);
+    theta = mu_theta+Sigma_theta*randn(1,1);
+    X{i,t +1} = [r*sin(theta); r*cos(theta);s*sin(c) - obs(3,1); s*cos(c) - obs(4,1)];
 end
 
 %Beginning of the loop on time
@@ -78,9 +78,8 @@ for t=0:t_f-1
     %PREDICTION
     
     for i=1:n
-        %epsilon = Gamma*(mu_v + Sigma_v.*randn(d_v,1)); %epsilon_k
-        epsilon = Gamma*normrnd(mu_v,Sigma_v,d_v,1);
-        Xtilde{i,t+1 +1} = F(X{i,t +1}) - U2(obs(:,t +1),obs(:,t+1 +1)) + epsilon;
+        epsilon = Gamma*(mu_v + Sigma_v.*randn(d_v,1)); %epsilon_k
+        Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(obs(:,t +1),obs(:,t+1 +1)) + epsilon;
         %Xtilde{i,t+1 +1} = F(X{i,t +1}) + epsilon;
     end
     % CORRECTION
@@ -112,17 +111,17 @@ end
 %g(x)
 
 % g de Quentin
-function[y_out] = Gq(x_in)
-    if x_in(1)>0 && x_in(2)>0
-       y_out = atan(x_in(1)/x_in(2));
-    elseif x_in(1)<0 && x_in(2)>0
-       y_out = atan(x_in(2)/x_in(1))+3*pi/2;
-    elseif x_in(1)<0 && x_in(2)<0
-       y_out = pi + atan(x_in(1)/x_in(2));
-    else
-       y_out = atan(x_in(2)/x_in(1))+pi/2;
-    end;
-end
+% function[y_out] = G(x_in)
+%     if x_in(1)>0 && x_in(2)>0
+%        y_out = atan(x_in(1)/x_in(2));
+%     elseif x_in(1)<0 && x_in(2)>0
+%        y_out = atan(x_in(2)/x_in(1))+3*pi/2;
+%     elseif x_in(1)<0 && x_in(2)<0
+%        y_out = pi + atan(x_in(1)/x_in(2));
+%     else
+%        y_out = atan(x_in(2)/x_in(1))+pi/2;
+%     end;
+% end
 
 function[y_out] = G(x_in)
     if x_in(1)>=0 && x_in(2)>=0
@@ -159,15 +158,15 @@ end
 function[u_out] = U(x1,x2)
 T = 1;
 u_out = zeros(4,1);
-u_out(1:2,1) = -x2(1:2)+x1(1:2)+T*x1(3:4);
-u_out(3:4,1) = -x2(3:4)+x1(3:4);
+u_out(1:2,1) = x2(1:2)-x1(1:2)-T*x1(3:4);
+u_out(3:4,1) = x2(3:4)-x1(3:4);
 end
 
 function[u_out]=U2(x1,x2)%version de l'autre
 T=1;
 u_out=zeros(4,1);
-u_out(1:2)=T/2*(x2(3:4)-x1(3:4));
-u_out(3:4,1) = x2(3:4)-x1(3:4);
+u_out(1:2)=T*(x2(3:4)-x1(3:4));
+u_out(3:4) = x2(3:4)-x1(3:4);
 end
 
 

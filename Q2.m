@@ -14,7 +14,7 @@ F(2,4) = T;
 G = [T^2/2 0; 0 T^2/2; T 0; 0 T];
 % sigma_a and sigma_theta
 sigm_a = 0.01;
-sigm_th = 0.01;
+sigm_th = 10;
 % v random gaussian noise of variance sigma_a*I and zero-mean (iid) 
 % w random gaussian noise of variance sigma_theta and zero-mean
 %for m=1:5000
@@ -38,20 +38,16 @@ for k = 1:200
         Z(1,k) = 2*pi - atan(abs(X(1,k)/X(2,k)))+w(1,k);
     end
 end
-%second part of the algortihm
-%end
-Abs=X(1,:);
 
-Coo=X(2,:);
 % representations
-figure(1)
+subplot(1,2,2)
 plot(X(1,:),X(2,:),'r')
 xlabel('x(k)');
 ylabel('y(k)');
 title('trajectory of the relatives positions x and y')
 
 Zpi = Z.*(1/pi);
-figure(2)
+subplot(1,2,1)
 plot(Zpi,'b')
 xlabel('time [s]')
 ylabel('z(k)/\pi')
