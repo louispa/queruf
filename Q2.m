@@ -1,4 +1,3 @@
-function[Z,Abs,Coo]=Q2()
 % time period
 T = 0.5;
 % initial vector
@@ -15,9 +14,8 @@ G = [T^2/2 0; 0 T^2/2; T 0; 0 T];
 % sigma_a and sigma_theta
 sigm_a = 0.01;
 sigm_th = 10;
-% v random gaussian noise of variance sigma_a*I and zero-mean (iid) 
-% w random gaussian noise of variance sigma_theta and zero-mean
-%for m=1:5000
+% v random gaussian noise of variance sigma^2_a*I and zero-mean (iid) 
+% w random gaussian noise of variance sigma^2_theta and zero-mean
 v = randn(2,200)*sigm_a;
 w = randn(1,200)*sigm_th;
 for k = 1:200
@@ -52,4 +50,3 @@ plot(Zpi,'b')
 xlabel('time [s]')
 ylabel('z(k)/\pi')
 title('Evolution of the measured theta angle')
-end
