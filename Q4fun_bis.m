@@ -30,11 +30,15 @@ obs(3:4,t_f+1) = obs(3:4,t_f);
     
 Gamma = [T^2/2 * eye(2);T * eye(2)];
 mu_v = 0;
-Sigma_v = sqrt(10^(-6));%sqrt(variance)
+%Sigma_v = sqrt(10^(-6));%sqrt(variance)
+Sigma_v = 0; % question5
+
 Sigma_r = sqrt(0.1); %sqrt(variance) of the relative distance
 Sigma_theta = sqrt(10^(-4)); %sqrt(variance) of the initial bearing
 Sigma_s = sqrt(0.1); %sqrt(variance) of the initial speed of the target
 Sigma_c = sqrt(0.1); %sqrt(variance) of the initial course of the target
+
+
 
 %  Sigma_v = 0;%sqrt(variance)
 %  Sigma_r = 0; %sqrt(variance) of the relative distance
