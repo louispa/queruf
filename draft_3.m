@@ -1,4 +1,4 @@
-% draft
+
 function[]=draft_3(X,n,t_f)
 %Draw the histograms at time t=1,50,100 and 200 for x and y
 %Draw the trajectory of the target 

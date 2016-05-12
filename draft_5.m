@@ -2,7 +2,10 @@
 function[]=draft_5(observer,real_target,X,Xtilde,X1,Xtilde1)
 %%
 t_f = 25;
-% computation of the observer's and target's velocities
+
+% computation of the observer's and target's velocities at time k with 
+% (x(k+1) - x(k))/T. The velocity at time t_f is supposed to be the same as
+% the one at time t_f-1
 T = 1;
 obs = zeros(4,t_f+1);
 v_target = zeros(4,t_f+1);
@@ -38,24 +41,34 @@ xlabel('x')
 ylabel('y')
 
 figure(2);
+% number of particles after resampling
 numberx = zeros(1,t_f+1);
+% number of particles before resampling
 numberxt = zeros(1,t_f+1);
+% since Xtilde(:,1) is empty
 Xtilde(:,1) = X(:,1);
 for t = 0:t_f
+    % generation of a 4x5000 matric for every sample after resampling
     x = X(:,t+1);
     x = cell2mat(x);
     x = reshape(x,4,5000);
     y = x';
+    % we only keep unique elements and put the number in numberx at the
+    % right index
     unix = unique(y,'rows');
     numberx(t+1) = length(unix(:,1));
     
+    % generation of a 4x5000 matric for every sample before resampling
     xt = Xtilde(:,t+1);
     xt = cell2mat(xt);
     xt = reshape(xt,4,5000);
     yt = xt';
+    % we only keep unique elements and put the number in numberx at the
+    % right index
     unixt = unique(yt,'rows');
     numberxt(t+1) = length(unixt(:,1));
 end
+% semilogarithmic plots. Log scale on the y_axis
 semilogy(numberx,'b'); hold on;
 semilogy(numberxt,'r');
 title('number of different particles for the regularized particle filter')

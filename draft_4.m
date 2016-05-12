@@ -3,7 +3,9 @@ function[]=draft_4(observer,real_target,X,Xtilde)
 
 t_f = 25;
 
-% computation of the observer's and target's velocities
+% computation of the observer's and target's velocities at time k with 
+% (x(k+1) - x(k))/T. The velocity at time t_f is supposed to be the same as
+% the one at time t_f-1
 T = 1;
 obs = zeros(4,t_f+1);
 v_target = zeros(4,t_f+1);
@@ -17,6 +19,11 @@ obs(1:2,t_f+1) = observer(1:2,t_f+1);
 obs(3:4,t_f+1) = obs(3:4,t_f);
 v_target(1:2,t_f+1) = real_target(1:2,t_f+1);
 v_target(3:4,t_f+1) = v_target(3:4,t_f);
+
+
+% We will comment the first plot since we repeat the almost exact same code
+% 4 times. Comments are therefore similar
+
 
 % k = 1
 % ------------------------------------------------------------------------

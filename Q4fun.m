@@ -30,7 +30,7 @@ Gamma = [T^2/2 * eye(2);T * eye(2)];
 
 mu_v = 0;
 Sigma_a = sqrt(10^(-6));%sqrt(variance)
-% Sigma_a = 0; % question5 and question6
+% Sigma_a = 0; % question5 
 
 Sigma_r =  sqrt(0.1); %sqrt(variance) of the relative distance
 Sigma_theta =  sqrt(10^(-4)); %sqrt(variance) of the initial bearing

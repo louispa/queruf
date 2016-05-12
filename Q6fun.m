@@ -28,7 +28,7 @@ f_1=inv(f); % F^-1
 
 % initialisation
 Jk=cell(t_f,1);
-Jk{1} = inv(P1) % J1 = P1^-1
+Jk{1} = inv(P1); % J1 = P1^-1
 
 % recursion
 Jk{1}=inv(P1);

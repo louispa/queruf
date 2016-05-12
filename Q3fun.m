@@ -19,7 +19,7 @@ T=0.5;
 Gamma = [T^2/2 * eye(2);T * eye(2)];
 % v is a zero mean noise of variance sigma^2_v*I (iid)
 mu_v = 0;
-Sigma_v = sqrt(0.01);
+Sigma_a = sqrt(0.01);
 % w is a zero mean noise of variance sigma^2_w
 mu_w= 0;
 Sigma_w = sqrt(0.01);
@@ -33,7 +33,7 @@ x_true(:,0 +1)=ones(4,1);
 
 % computation of x_true and z_true
 for t= 0:t_f-1
-    v_true = Gamma*(mu_v + Sigma_v.*randn(d_v,1));
+    v_true = Gamma*(mu_v + Sigma_a.*randn(d_v,1));
     x_true(:,t+1 +1) = F(x_true(:,t +1)) + v_true;
     w_true = mu_w + Sigma_w*randn(d_z,1);
     z_true(:,t +1)=G(x_true(:,t +1)) + w_true;
@@ -63,7 +63,7 @@ for t=0:t_f-1
     % PREDICTION
     
     for i=1:n
-        epsilon=Gamma*(mu_v+ Sigma_v.*randn(d_v,1)); %epsilon_k
+        epsilon=Gamma*(mu_v+ Sigma_a.*randn(d_v,1)); %epsilon_k
         Xtilde{i,t+1 +1} = F(X{i,t +1})+ epsilon;
     end
     
@@ -83,10 +83,6 @@ for t=0:t_f-1
         X{i,t+1 +1} = Xtilde{ind_sample(i),t+1 +1};
     end
 end
-
-% plot of the histograms at k = 1,50,100 and 200
-%draft(X,n,t_f+1);
-
 end
 
 
