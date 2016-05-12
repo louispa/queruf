@@ -1,5 +1,5 @@
-%p=load('data.mat');
-%[X_target,Xtilde_target]=Q4fun_bis(p.observer, p.target, p.measurements, p.r, p.theta, p.s, p.c);
+p=load('data.mat');
+[X_target,Xtilde_target]=Q4fun_bis(p.observer, p.target, p.measurements, p.r, p.theta, p.s, p.c);
 
 t_f=26;
 
