@@ -1,4 +1,4 @@
-function[X,Xtilde]=Q5fun(observer,target,bearingMeasurements,mu_r,mu_theta,mu_s,mu_c)
+function[X,Xtilde]=Q5fun(observer,bearingMeasurements,mu_r,mu_theta,mu_s,mu_c)
 %%
 
 % the system :
@@ -7,8 +7,7 @@ function[X,Xtilde]=Q5fun(observer,target,bearingMeasurements,mu_r,mu_theta,mu_s,
 %   F and G are defined in the function below
 
 t_f = 25;
-% dimensions of z,v and x
-d_z=1;
+% dimensions of v and x
 d_v=2;
 d_x=4;
 T=1; % time period
@@ -30,14 +29,13 @@ Gamma = [T^2/2 * eye(2);T * eye(2)];
 % v is a zero-mean Gaussian noise with variance Sigma^2_v.
 
 mu_v = 0;
-Sigma_v = 0;
+Sigma_a = 0;
 Sigma_r = sqrt(0.1); %sqrt(variance) of the relative distance
 Sigma_theta = sqrt(10^(-4)); %sqrt(variance) of the initial bearing
 Sigma_s = sqrt(0.1); %sqrt(variance) of the initial speed of the target
 Sigma_c = sqrt(0.1); %sqrt(variance) of the initial course of the target
 
-% true relative trajectory and measurements (given)
-x_true = target-observer;
+% true measurements (given)
 z_true = bearingMeasurements; 
 
 %%
@@ -65,12 +63,13 @@ for i=1:n
 end
 
 %Beginning of the loop on time
+e = zeros(t_f,1);
 for t=0:t_f-1
     
     %PREDICTION
     
     for i=1:n
-        epsilon = Gamma*(mu_v + Sigma_v.*randn(d_v,1)); %epsilon_k
+        epsilon = Gamma*(mu_v + Sigma_a.*randn(d_v,1)); %epsilon_k
         Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(obs(:,t +1),obs(:,t+1 +1)) + epsilon;
     end
     
@@ -84,36 +83,50 @@ for t=0:t_f-1
        weights(i) = W(z-G(Xtilde{i,t+1 +1}));
     end
     
-    % regularization
-    sumWeight=sum(weights.*weights);
+    % REGULARIZATION
+    
+    % normalization of the weights
+    somme = sum(weights);
+    weights = weights/somme;
+    
+    % computation of Neff, Nth, h
+    sumWeight=sum(weights.^2);
     Neff=1/sumWeight;
     Nth = n/3;
-    nx = 4;
+    h = (4/(n*(d_x+2)))^(1/(d_x+4));
+    
+    % creation of a 5000x4 matric for every sample i (i = 1,...,26)
     xI = Xtilde(:,t+1 +1);
     xI = cell2mat(xI);
     xI = reshape(xI,d_x,n);
-    xk = zeros(d_x, n);
-    h = (4/(n*(nx+2)))^(1/(nx+4));
-    for i=1:d_x
-        if Neff < Nth
-            try
-            [xk(i,:), ~] = ksdensity(sort(xI(i,:)), 'npoints', n, 'bandwidth', h, 'weights', weights, 'function', 'icdf');
-            catch error
-            ind_sample = randsample(n,n,true,weights);
-            x = xI(i,:);
-            xk(i,:) = x(ind_sample);
-            end
-        else
-            ind_sample = randsample(n,n,true,weights);
-            x = xI(i,:);
-            xk(i,:) = x(ind_sample);
+    xI = xI';
+    
+    if Neff <= Nth
+        %e(t+1) = 1;
+        S = cov(xI); % empirical covariance matrix
+        A = sqrtm(S); % square root of the empirical covariance matrix
+        
+        % resampling
+        ind_sample = randsample(n,n,true,weights);
+        for i=1:n
+            X{i,t+1 +1} = Xtilde{ind_sample(i),t+1 +1};
+        end
+        
+        % generation of epsilon from the Gaussian Kernel and recursion step
+        [~,ca]  = size(A);
+        for i = 1:n
+            epsilon = randn(ca,1);
+            X{i,t+1 +1} = X{i,t+1 +1} + h*A*epsilon;
+        end
+    else
+        % resampling
+        ind_sample = randsample(n,n,true,weights);
+        for i=1:n
+            X{i,t+1 +1} = Xtilde{ind_sample(i),t+1 +1};
         end
     end
-    
-    for i=1:n
-        X{i,t+1 +1} = xk(:,i);
-    end
 end
+%e
 end
 %%
 

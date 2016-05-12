@@ -2,7 +2,7 @@
 % Sequential Monte Carlo applied on the problem of the project
 % based on the script received from professor Pierre-Antoine Absil.
 
-function[X,Xtilde] = Q3fun()
+function[X,Xtilde,n,t_f] = Q3fun()
 % the system
 % x_(k+1)=F (x_k)+Gamma * v_k
 % z_k = G(x_k)+w_k
@@ -23,8 +23,6 @@ Sigma_v = sqrt(0.01);
 % w is a zero mean noise of variance sigma^2_w
 mu_w= 0;
 Sigma_w = sqrt(0.01);
-% probability distribution function of noise w (Gaussian)
-out_noise_pdf= @(w) 1/sqrt((2*pi)^d_z*abs(det(Sigma_w^2))) * exp(-.5*(w-mu_w)'*inv(Sigma_w^2)*(w-mu_w)); %normal sigma theta
 
 % true positions and true measurements
 x_true = zeros(d_x,t_f +1);
@@ -77,7 +75,7 @@ for t=0:t_f-1
     weights = zeros(1,n);
     for i=1:n
         % w = z - G(x)
-        weights(i) = out_noise_pdf(z-G(Xtilde{i,t+1 +1}));
+        weights(i) = W(z-G(Xtilde{i,t+1 +1}));
     end
     % resampling
     ind_sample = randsample(n,n,true,weights);
@@ -118,3 +116,12 @@ function[y_out]=G(x_in)
     end;
 end
 
+%W(w)
+function y_out = W(w)
+% w is a zero mean noise of variance sigma^2_w
+mu_w= 0;
+Sigma_w = sqrt(0.01);
+d_z = 1;
+% probability distribution function of noise w (Gaussian)
+y_out = 1/sqrt((2*pi)^d_z*abs(det(Sigma_w^2))) * exp(-.5*(w-mu_w)'*inv(Sigma_w^2)*(w-mu_w)); 
+end
