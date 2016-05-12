@@ -7,7 +7,7 @@ estimated_relative=zeros(4,t_f);
 for i=1:t_f
     helper=[0 0 0 0]';
     for j=1:length(X_target)
-        helper=helper+X_target{j,i}; %size(X) = 5000 26
+        helper=helper+X_target{j,i}; 
     end
     estimated_relative(:,i)=helper/length(X_target);
 end
@@ -24,11 +24,13 @@ for i=1:t_f
     end
     estimated_relative_error(i)=sqrt(helper/length(X_target));
 end
+
 %graphs
 plot(bound);
 hold on;
 plot(estimated_relative_error);
 hold off;
+
 legend('Cramer Rao Lower Bound','RMS postition error');
 
 
