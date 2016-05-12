@@ -43,10 +43,7 @@ plot(bound);
 hold on;
 plot(estimated_relative_error);
 hold off;
-<<<<<<< HEAD
-=======
 title('Evolution of the CRLMB of the RMS error and the RMS error in function of the time');
->>>>>>> origin/master
 legend('Cramer Rao Lower Bound','RMS postition error');
 xlabel('iterations');
 ylabel('error');
