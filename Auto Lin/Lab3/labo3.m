@@ -27,13 +27,15 @@ Ha=zpk(tf(10*d*a21,[1 (a11+a22) a11*a22-a12*a21]));
 figure(1)
 [ga, tga] = step(Ga);
 plot(tga,ga); hold on;
-m = reader('linear_2')
+m = reader3('Exp_5_3_1.txt')
 plot(m(:,1),(m(:,4)-40)./10,'r'); hold off;
 title('réponse indicielle de Ga');
 
 figure(2)
-[va,tva] = step(Ha);
-plot(tva,va);
+[va,tva] = step(49-200*Ha);
+plot(tva,va); hold on;
+m = reader3('Exp_5_3_1.txt')
+plot(m(:,1),(m(:,4)-40)./10,'r'); hold off;
 title('réponse indicielle de Ha');
 
 tau=1/0.087;
@@ -48,7 +50,7 @@ Hb=zpk(tf(-10*d.*[1 -2*a21+a22],[1 (a11+a22) a11*a22-a12*a21]));
 [g,tg] = step(Gb);
 figure(3)
 plot(tg,g); hold on;
-mb=reader('linear_2');
+mb=reader3('linear_2');
 plot(mb(:,1),(mb(:,4)-40)./10,'r'); hold off;
 title('réponse indicielle de Gb (sytème à non-minimum de phase)');
 
@@ -58,8 +60,11 @@ plot(tg,g); hold off;
 title('comparaison de Ga (min. phase) et Gb (non min. phase)')
 
 figure(5)
-[gb,tgb] = step(Hb);
-plot(tgb,gb);
+step(-Hb); hold on;
+%[gb,tgb] = step(49-200*Hb); hold on;
+%plot(tgb,gb); hold on;
+mb=reader3('Exp_5_3_2.txt');
+plot(mb(9:end,1),(mb(9:end,4)),'r'); hold off;
 title('réponse indicielle de Hb (sytème à non-minimum de phase)');
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -77,7 +82,7 @@ tva=tf(10*d*a21,[1 0.087])*tf(1, [1 2*alpha alpha^2]);
 figure(6)
 [tva,ttva] = step(tva);
 plot(ttva,tva); hold on;
-mm=reader('close_loop_minimum_phase_1');
+mm=reader3('close_loop_minimum_phase_1');
 plot(mm(:,1),mm(:,4)./40,'r');
 hold off;
 title('Tva en boucle fermée')
@@ -90,7 +95,7 @@ tvb=zpk(tf(-10*d.*[1 -2*a21+a22 0],[1 a11+a22-10^3/pb*b...
 figure(7)
 [tvb,ttvb]=step(tvb);
 plot(ttvb,tvb);hold on;
-mnm=reader('non_minimum_phase_equilibrum_1_complet');
+mnm=reader3('non_minimum_phase_equilibrum_1_complet');
 plot(mnm(:,1),mnm(:,4),'r');hold off;
 title('Tvb en boucle fermée (non min de phase')
 
