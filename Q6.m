@@ -32,7 +32,7 @@ for i=1:t_f
     helper=0;
     for j=1:length(X_target)
         helper=helper+ (X_target{j,i}(1)-true_relative(1,i))^2 ...
-            +(X_target{j,i}(2)-true_relative(2,i))^2; %size(X) = 5000 26
+            +(X_target{j,i}(2)-true_relative(2,i))^2; 
     end
     estimated_relative_error(i)=sqrt(helper/length(X_target));
 end

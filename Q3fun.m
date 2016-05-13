@@ -1,5 +1,5 @@
 
-% Sequential Monte Carlo applied on the problem of the project
+% Sequential Monte Carlo applied on the problem of question 3
 % based on the script received from professor Pierre-Antoine Absil.
 
 function[X,Xtilde,n,t_f] = Q3fun()
