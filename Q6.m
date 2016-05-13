@@ -19,7 +19,7 @@ end
 
 % plot of the estimated relative trajectory
 figure(1)
-plot(estimated_relative(1,:),estimated_relative(2,:),'.b');
+plot(estimated_relative(1,:),estimated_relative(2,:),'.-b');
 title('relative trajectory')
 
 true_relative=p.target-p.observer; % true relative trajectory
@@ -39,9 +39,9 @@ end
 
 % graphs
 figure(2)
-plot(bound);
+plot(bound,'-ob');
 hold on;
-plot(estimated_relative_error);
+plot(estimated_relative_error,'-or');
 hold off;
 title('Evolution of the CRLMB of the RMS error and the RMS error in function of the time');
 legend('Cramer Rao Lower Bound','RMS postition error');

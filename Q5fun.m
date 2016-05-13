@@ -2,9 +2,9 @@ function[X,Xtilde]=Q5fun(observer,bearingMeasurements,mu_r,mu_theta,mu_s,mu_c)
 %%
 
 % the system :
-%   x_(k+1)=F (x_k)+Gamma * v_k
-%   z_k = G(x_k)+w_k
-%   F and G are defined in the function below
+%   state equation: x_(k+1) = F(x_k) - U_(k,k+1) + Gamma*v_k
+%   z_k = H(x_k) + w_k
+%   F and H are defined in the function below
 
 t_f = 25;
 % dimensions of v and x
@@ -26,7 +26,7 @@ obs(3:4,t_f+1) = obs(3:4,t_f);
     
 Gamma = [T^2/2 * eye(2);T * eye(2)];
 
-% v is a zero-mean Gaussian noise with variance Sigma^2_v.
+% v is a zero-mean Gaussian noise with variance Sigma^2_a.
 
 mu_v = 0;
 Sigma_a = 0;
@@ -70,6 +70,7 @@ for t=0:t_f-1
     
     for i=1:n
         epsilon = Gamma*(mu_v + Sigma_a.*randn(d_v,1)); %epsilon_k
+        % state equation
         Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(obs(:,t +1),obs(:,t+1 +1)) + epsilon;
     end
     
@@ -80,7 +81,7 @@ for t=0:t_f-1
     %weights
     weights = zeros(1,n);
     for i=1:n
-       weights(i) = W(z-G(Xtilde{i,t+1 +1}));
+       weights(i) = W(z-H(Xtilde{i,t+1 +1}));
     end
     
     % REGULARIZATION
@@ -102,7 +103,7 @@ for t=0:t_f-1
     xI = xI';
     
     if Neff <= Nth
-        %e(t+1) = 1;
+        e(t+1) = 1;
         S = cov(xI); % empirical covariance matrix
         A = sqrtm(S); % square root of the empirical covariance matrix
         
@@ -126,7 +127,7 @@ for t=0:t_f-1
         end
     end
 end
-%e
+e
 end
 %%
 
@@ -140,8 +141,8 @@ f=[eye(2) T*eye(2);zeros(2) eye(2)];
 x_out = f*x_in;
 end
 
-% g(x)
-function[y_out] = G(x_in)
+% h(x)
+function[y_out] = H(x_in)
     if x_in(1)>=0 && x_in(2)>=0
        y_out = atan(abs(x_in(1)/x_in(2)));
     elseif x_in(1)>0 && x_in(2)<0

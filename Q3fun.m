@@ -5,7 +5,7 @@
 function[X,Xtilde,n,t_f] = Q3fun()
 % the system
 % x_(k+1)=F (x_k)+Gamma * v_k
-% z_k = G(x_k)+w_k
+% z_k = H(x_k)+w_k
 
 % time steps
 t_f=200;
@@ -36,10 +36,10 @@ for t= 0:t_f-1
     v_true = Gamma*(mu_v + Sigma_a.*randn(d_v,1));
     x_true(:,t+1 +1) = F(x_true(:,t +1)) + v_true;
     w_true = mu_w + Sigma_w*randn(d_z,1);
-    z_true(:,t +1)=G(x_true(:,t +1)) + w_true;
+    z_true(:,t +1)=H(x_true(:,t +1)) + w_true;
 end
 w_true = mu_w + Sigma_w*randn(d_z,1);
-z_true(:,t_f +1) = G(x_true(:,t_f +1)) + w_true;
+z_true(:,t_f +1) = H(x_true(:,t_f +1)) + w_true;
 
 
 %%
@@ -74,8 +74,8 @@ for t=0:t_f-1
     %weights
     weights = zeros(1,n);
     for i=1:n
-        % w = z - G(x)
-        weights(i) = W(z-G(Xtilde{i,t+1 +1}));
+        % w = z - h(x)
+        weights(i) = W(z-H(Xtilde{i,t+1 +1}));
     end
     % resampling
     ind_sample = randsample(n,n,true,weights);
@@ -99,8 +99,8 @@ f=[eye(2) T*eye(2);zeros(2) eye(2)];
 x_out= f*x_in;
 end
 
-%G(x)
-function[y_out]=G(x_in)
+%H(x)
+function[y_out]=H(x_in)
     if x_in(1)>=0 && x_in(2)>=0
        y_out = atan(abs(x_in(1)/x_in(2)));
     elseif x_in(1)>0 && x_in(2)<0

@@ -1,9 +1,9 @@
 function[X,Xtilde]=Q4fun(observer,bearingMeasurements,mu_r,mu_theta,mu_s,mu_c)
 %%
 % the system :
-%   x_(k+1)=F (x_k)+Gamma * v_k
-%   z_k = G(x_k)+w_k
-%   F and G are defined in the function below
+%   state equation: x_(k+1)=F(x_k) - U_(k,k+1) + Gamma*v_k
+%   measurement: z_k = H(x_k) + w_k
+%   F and H are defined in the function below
 
 t_f = 25;
 % dimensions of v
@@ -30,7 +30,7 @@ Gamma = [T^2/2 * eye(2);T * eye(2)];
 
 mu_v = 0;
 Sigma_a = sqrt(10^(-6));%sqrt(variance)
-% Sigma_a = 0; % question5 
+%Sigma_a = 0; % question5 
 
 Sigma_r =  sqrt(0.1); %sqrt(variance) of the relative distance
 Sigma_theta =  sqrt(10^(-4)); %sqrt(variance) of the initial bearing
@@ -71,6 +71,7 @@ for t=0:t_f-1
     
     for i=1:n
         epsilon = Gamma*(mu_v + Sigma_a.*randn(d_v,1)); %epsilon_k
+        % state equation
         Xtilde{i,t+1 +1} = F(X{i,t +1}) - U(obs(:,t +1),obs(:,t+1 +1)) + epsilon;
     end
     
@@ -81,7 +82,7 @@ for t=0:t_f-1
     %weights
     weights = zeros(1,n);
     for i=1:n
-       weights(i) = W(z-G(Xtilde{i,t+1 +1}));
+       weights(i) = W(z-H(Xtilde{i,t+1 +1}));
     end
     
     % resampling
@@ -103,8 +104,8 @@ f=[eye(2) T*eye(2);zeros(2) eye(2)];
 x_out = f*x_in;
 end
 
-%g(x)
-function[y_out] = G(x_in)
+%h(x)
+function[y_out] = H(x_in)
     if x_in(1)>=0 && x_in(2)>=0
        y_out = atan(abs(x_in(1)/x_in(2)));
     elseif x_in(1)>0 && x_in(2)<0

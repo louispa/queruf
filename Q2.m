@@ -9,9 +9,10 @@ Z = zeros(1,200);
 F = eye(4,4);
 F(1,3) = T;
 F(2,4) = T;
-% G
+% Gamma
 G = [T^2/2 0; 0 T^2/2; T 0; 0 T];
 % sigma_a and sigma_theta
+% choose various values for sigma_a and sigma_theta
 sigm_a = 0.01;
 sigm_th = 10;
 % v random gaussian noise of variance sigma^2_a*I and zero-mean (iid) 
@@ -20,20 +21,24 @@ v = randn(2,200)*sigm_a;
 w = randn(1,200)*sigm_th;
 for k = 1:200
     eps = G*v(:,k);
+    
+    % We suppose U to be zero for all k
+    % state equation: x_k+1 = F*x_k + epsilon
     if k == 1
         X(:,k) = F*x0 + eps;
     else
         X(:,k) = F*X(:,k-1) + eps;
     end
     
+    % state equation: theta_k = h(x_k) + w_k
     if X(1,k)>=0 && X(2,k)>=0
-        Z(1,k) = atan(abs(X(1,k)/X(2,k)))+w(1,k);
+        Z(1,k) = atan(abs(X(1,k)/X(2,k)))+w(k);
     elseif X(1,k)>0 && X(2,k)<0
-        Z(1,k) = pi - atan(abs(X(1,k)/X(2,k)))+w(1,k);
+        Z(1,k) = pi - atan(abs(X(1,k)/X(2,k)))+w(k);
     elseif X(1,k)<0 && X(2,k)<0
-        Z(1,k) = pi + atan(abs(X(1,k)/X(2,k)))+w(1,k);
+        Z(1,k) = pi + atan(abs(X(1,k)/X(2,k)))+w(k);
     else
-        Z(1,k) = 2*pi - atan(abs(X(1,k)/X(2,k)))+w(1,k);
+        Z(1,k) = 2*pi - atan(abs(X(1,k)/X(2,k)))+w(k);
     end
 end
 

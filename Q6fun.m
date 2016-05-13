@@ -33,7 +33,7 @@ Jk{1} = inv(P1); % J1 = P1^-1
 % recursion
 Jk{1}=inv(P1);
 for i=2:26
-    Jk{i}= f_t*Jk{i-1}*f_1+sigma_theta_squared^-1*dG(X(:,i))*dG(X(:,i))';
+    Jk{i}= f_t*Jk{i-1}*f_1+sigma_theta_squared^-1*dH(X(:,i))*dH(X(:,i))';
 end
 
 bound=zeros(26,1);
@@ -44,9 +44,9 @@ end
 
 end
 
-% dG(x)
-%G= constant +- artan( abs(x/y)
-function[y_out] = dG(x_in)
+% dH(x)
+% H = constant +- artan(abs(x/y))
+function[y_out] = dH(x_in)
     if x_in(1)>=0 && x_in(2)>=0
        y_out = [1/(x_in(2)*(x_in(1)^2/x_in(2)^2 + 1));...
            -x_in(1)/(x_in(2)^2*(x_in(1)^2/x_in(2)^2 + 1)); 0 ; 0];

@@ -63,6 +63,8 @@ end
 plot(particules_before(:,1),particules_before(:,2),'m.');
 plot(particules_after(:,1),particules_after(:,2),'y.');
 title('positions');
+xlabel('x');
+ylabel('y');
 
 % second subplot for the different velocities
 % velocities of the particles before resampling are plotted in blue
@@ -106,6 +108,8 @@ for j=1:length(X)
 plot(particules_before(:,1),particules_before(:,2),'m.');
 plot(particules_after(:,1),particules_after(:,2),'y.');
 title('positions'); 
+xlabel('x');
+ylabel('y');
 
 subplot(2,1,2)
 plot(particules_before(:,3),particules_before(:,4),'m.'); hold on;
@@ -145,6 +149,8 @@ for j=1:length(X)
 plot(particules_before(:,1),particules_before(:,2),'m.');
 plot(particules_after(:,1),particules_after(:,2),'y.');
 title('positions'); 
+xlabel('x');
+ylabel('y');
 
 subplot(2,1,2)
 plot(particules_before(:,3),particules_before(:,4),'m.'); hold on;
@@ -184,6 +190,8 @@ for j=1:length(X)
 plot(particules_before(:,1),particules_before(:,2),'m.');
 plot(particules_after(:,1),particules_after(:,2),'y.');
 title('positions');
+xlabel('x');
+ylabel('y');
 
 subplot(2,1,2)
 plot(particules_before(:,3),particules_before(:,4),'m.'); hold on;
@@ -226,6 +234,8 @@ for j=1:length(X)
 plot(particules_before(:,1),particules_before(:,2),'m.');
 plot(particules_after(:,1),particules_after(:,2),'y.');
 title('positions');
+xlabel('x');
+ylabel('y');
 
 subplot(2,1,2)
 plot(particules_before(:,3),particules_before(:,4),'m.'); hold on;

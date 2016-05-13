@@ -12,13 +12,13 @@ v_target = zeros(4,t_f+1);
 for k = 1:t_f
     obs(1:2,k) = observer(:,k);
     obs(3:4,k) = (observer(:,k+1) - observer(:,k))/T;
-    v_target(1:2,k) = real_target(:,k);
-    v_target(3:4,k) = (real_target(:,k+1) - real_target(:,k))/T;
+    %v_target(1:2,k) = real_target(:,k);
+    %v_target(3:4,k) = (real_target(:,k+1) - real_target(:,k))/T;
 end
 obs(1:2,t_f+1) = observer(1:2,t_f+1);
 obs(3:4,t_f+1) = obs(3:4,t_f);
-v_target(1:2,t_f+1) = real_target(1:2,t_f+1);
-v_target(3:4,t_f+1) = v_target(3:4,t_f);
+%v_target(1:2,t_f+1) = real_target(1:2,t_f+1);
+%v_target(3:4,t_f+1) = v_target(3:4,t_f);
 
 figure(1)
 plot(obs(1,:),obs(2,:),'.'); hold on; % real trajectory of the observer
@@ -69,8 +69,8 @@ for t = 0:t_f
     numberxt(t+1) = length(unixt(:,1));
 end
 % semilogarithmic plots. Log scale on the y_axis
-semilogy(numberx,'b'); hold on;
-semilogy(numberxt,'r');
+semilogy(numberx,'-ob'); hold on;
+semilogy(numberxt,'-or');
 title('number of different particles for the regularized particle filter')
 xlabel('k')
 ylabel('n')
@@ -114,8 +114,8 @@ for t = 0:t_f
     unixt = unique(yt,'rows');
     numberxt(t+1) = length(unixt(:,1));
 end
-semilogy(numberx,'b'); hold on;
-semilogy(numberxt,'r');
+semilogy(numberx,'-ob'); hold on;
+semilogy(numberxt,'-or');
 title('number of different particles for the particle filter')
 xlabel('k')
 ylabel('n')

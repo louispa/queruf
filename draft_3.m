@@ -24,37 +24,53 @@ end
 figure(1)
 subplot(1,2,1)
 histogram(one(:,1)); hold on;
-title('Histograms for x at t=1');
+title('Histograms for x at k=1');
+xlabel('values of x');
+ylabel('number of particles')
 subplot(1,2,2)
 histogram(one(:,2));
-title('Histograms for y at t=1');
+title('Histograms for y at k=1');
+xlabel('values of y');
+ylabel('number of particles')
 
 % histogram at k = 50
 figure(2)
 subplot(1,2,1)
 histogram(fifty(:,1)); hold on;
-title('Histograms for x at t=50');
+title('Histograms for x at k=50');
+xlabel('values of x');
+ylabel('number of particles')
 subplot(1,2,2)
 histogram(fifty(:,2));
-title('Histograms for y at t=50');
+title('Histograms for y at k=50');
+xlabel('values of y');
+ylabel('number of particles')
 
 % histogram at k = 100
 figure(3)
 subplot(1,2,1)
 histogram(hundred(:,1)); hold on;
-title('Histograms for x at t=100');
+title('Histograms for x at k=100');
+xlabel('values of x');
+ylabel('number of particles')
 subplot(1,2,2)
 histogram(hundred(:,2));
-title('Histograms for y at t=100');
+title('Histograms for y at k=100');
+xlabel('values of y');
+ylabel('number of particles')
 
 % histogram at k = 200
 figure(4)
 subplot(1,2,1)
 histogram(twohundred(:,1)); hold on;
-title('Histograms for x at t=200');
+title('Histograms for x at k=200');
+xlabel('values of x');
+ylabel('number of particles')
 subplot(1,2,2)
 histogram(twohundred(:,2));
-title('Histograms for y at t=200');
+title('Histograms for y at k=200');
+xlabel('values of y');
+ylabel('number of particles')
 
 % the realtive trajectory is computed by taking the mean of the relative
 % trajectory on the sample. We thus work with X
@@ -73,4 +89,6 @@ end
 figure(5)
 plot(traj(1,:),traj(2,:),'.');
 title('Relative trajectory');
+xlabel('x');
+ylabel('y');
 end
