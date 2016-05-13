@@ -1,6 +1,7 @@
 
 function[]=draft_3(X,n,t_f)
 %Draw the histograms at time t=1,50,100 and 200 for x and y
+%For every t, we take the x and y (position)
 %Draw the trajectory of the target 
 one=zeros(n,2);
 %our first state is in t=0
@@ -23,11 +24,13 @@ end
 % histogram at k = 1
 figure(1)
 subplot(1,2,1)
+% histogram on x
 histogram(one(:,1)); hold on;
 title('Histograms for x at k=1');
 xlabel('values of x');
 ylabel('number of particles')
 subplot(1,2,2)
+% histogram on y
 histogram(one(:,2));
 title('Histograms for y at k=1');
 xlabel('values of y');
@@ -36,11 +39,13 @@ ylabel('number of particles')
 % histogram at k = 50
 figure(2)
 subplot(1,2,1)
+% histogram on x
 histogram(fifty(:,1)); hold on;
 title('Histograms for x at k=50');
 xlabel('values of x');
 ylabel('number of particles')
 subplot(1,2,2)
+% histogram on y
 histogram(fifty(:,2));
 title('Histograms for y at k=50');
 xlabel('values of y');
@@ -49,11 +54,13 @@ ylabel('number of particles')
 % histogram at k = 100
 figure(3)
 subplot(1,2,1)
+% histogram on x
 histogram(hundred(:,1)); hold on;
 title('Histograms for x at k=100');
 xlabel('values of x');
 ylabel('number of particles')
 subplot(1,2,2)
+% histogram on y
 histogram(hundred(:,2));
 title('Histograms for y at k=100');
 xlabel('values of y');
@@ -62,11 +69,13 @@ ylabel('number of particles')
 % histogram at k = 200
 figure(4)
 subplot(1,2,1)
+% histogram on x
 histogram(twohundred(:,1)); hold on;
 title('Histograms for x at k=200');
 xlabel('values of x');
 ylabel('number of particles')
 subplot(1,2,2)
+% histogram on y
 histogram(twohundred(:,2));
 title('Histograms for y at k=200');
 xlabel('values of y');

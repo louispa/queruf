@@ -63,7 +63,6 @@ for i=1:n
 end
 
 %Beginning of the loop on time
-e = zeros(t_f,1);
 for t=0:t_f-1
     
     %PREDICTION
@@ -76,11 +75,12 @@ for t=0:t_f-1
     
     % CORRECTION
     
-    z = z_true(:,t+1 +1);
+    z = z_true(:,t+1 +1); % z is the true output at time t+1
     
     %weights
     weights = zeros(1,n);
     for i=1:n
+       % w = z-H(x)
        weights(i) = W(z-H(Xtilde{i,t+1 +1}));
     end
     
@@ -103,7 +103,6 @@ for t=0:t_f-1
     xI = xI';
     
     if Neff <= Nth
-        e(t+1) = 1;
         S = cov(xI); % empirical covariance matrix
         A = sqrtm(S); % square root of the empirical covariance matrix
         
@@ -117,6 +116,7 @@ for t=0:t_f-1
         [~,ca]  = size(A);
         for i = 1:n
             epsilon = randn(ca,1);
+            % regularisation
             X{i,t+1 +1} = X{i,t+1 +1} + h*A*epsilon;
         end
     else

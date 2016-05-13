@@ -4,8 +4,8 @@
 
 function[X,Xtilde,n,t_f] = Q3fun()
 % the system
-% x_(k+1)=F (x_k)+Gamma * v_k
-% z_k = H(x_k)+w_k
+% state equation: x_(k+1)=F (x_k)+Gamma * v_k
+% measurements: z_k = H(x_k)+w_k
 
 % time steps
 t_f=200;
@@ -15,9 +15,9 @@ d_z=1;
 d_v=2;
 % period
 T=0.5;
-% F and G are defined in the function below
+% F and H are defined in the function below
 Gamma = [T^2/2 * eye(2);T * eye(2)];
-% v is a zero mean noise of variance sigma^2_v*I (iid)
+% v is a zero mean noise of variance sigma^2_a*I (iid)
 mu_v = 0;
 Sigma_a = sqrt(0.01);
 % w is a zero mean noise of variance sigma^2_w
@@ -33,9 +33,12 @@ x_true(:,0 +1)=ones(4,1);
 
 % computation of x_true and z_true
 for t= 0:t_f-1
-    v_true = Gamma*(mu_v + Sigma_a.*randn(d_v,1));
-    x_true(:,t+1 +1) = F(x_true(:,t +1)) + v_true;
+    % definition of epsilon_k
+    epsilon = Gamma*(mu_v + Sigma_a.*randn(d_v,1));
+    % state equation
+    x_true(:,t+1 +1) = F(x_true(:,t +1)) + epsilon;
     w_true = mu_w + Sigma_w*randn(d_z,1);
+    % noisy measurements
     z_true(:,t +1)=H(x_true(:,t +1)) + w_true;
 end
 w_true = mu_w + Sigma_w*randn(d_z,1);
@@ -64,12 +67,13 @@ for t=0:t_f-1
     
     for i=1:n
         epsilon=Gamma*(mu_v+ Sigma_a.*randn(d_v,1)); %epsilon_k
+        % state equation
         Xtilde{i,t+1 +1} = F(X{i,t +1})+ epsilon;
     end
     
     % CORRECTION
     
-    z = z_true(:,t+1 +1);
+    z = z_true(:,t+1 +1); % true measurement at time t+1
     
     %weights
     weights = zeros(1,n);

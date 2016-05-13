@@ -33,10 +33,12 @@ Jk{1} = inv(P1); % J1 = P1^-1
 % recursion
 Jk{1}=inv(P1);
 for i=2:26
+    % recursion on Jk
     Jk{i}= f_t*Jk{i-1}*f_1+sigma_theta_squared^-1*dH(X(:,i))*dH(X(:,i))';
 end
 
 bound=zeros(26,1);
+% computation of the Cramer-Rao bound of the RMS at every time
 for i=1:26
    P = inv(Jk{i}); % P = Jk^-1
    bound(i)=sqrt(P(1,1) + P(2,2)); % CRLB(RMSk)
@@ -45,7 +47,7 @@ end
 end
 
 % dH(x)
-% H = constant +- artan(abs(x/y))
+% reminder: H = constant +- artan(abs(x/y))
 function[y_out] = dH(x_in)
     if x_in(1)>=0 && x_in(2)>=0
        y_out = [1/(x_in(2)*(x_in(1)^2/x_in(2)^2 + 1));...
